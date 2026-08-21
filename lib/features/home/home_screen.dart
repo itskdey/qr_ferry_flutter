@@ -188,7 +188,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: .centerLeft,
+      alignment: Alignment.centerLeft,
       height: HomeScreen._headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
@@ -209,14 +209,48 @@ class _Header extends StatelessWidget {
                 letterSpacing: -0.8,
               ),
             ),
-            Spacer(),
-            Transform.rotate(
-              angle: math.pi - math.pi / 4,
-              child: Icon(Icons.arrow_back),
+            const Spacer(),
+            Semantics(
+              button: true,
+              label: 'Open QRFerry project details',
+              child: Pressable(
+                onTap: () => Get.toNamed<void>(AppRoutes.details),
+                pressedScale: 0.96,
+                pressedOffset: 1,
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'DETAILS',
+                      style: TextStyle(
+                        color: QrFerryDesign.muted,
+                        fontFamily: 'monospace',
+                        fontSize: 8,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.7,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    _DetailsArrow(),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DetailsArrow extends StatelessWidget {
+  const _DetailsArrow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: math.pi - math.pi / 4,
+      child: const Icon(Icons.arrow_back, size: 20),
     );
   }
 }
