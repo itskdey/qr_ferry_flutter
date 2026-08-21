@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,6 +21,7 @@ class ReceiveController extends GetxController {
   );
 
   final hasSession = false.obs;
+  final sessionId = RxnInt();
   final filename = Rxn<String>();
   final receivedCount = 0.obs;
   final chunkCount = 0.obs;
@@ -28,10 +30,19 @@ class ReceiveController extends GetxController {
   final savedPath = Rxn<String>();
   final error = Rxn<String>();
 
+  final originalSize = 0.obs;
+  final transmittedSize = 0.obs;
+  final receivedPayloadBytes = 0.obs;
+  final transferRateBytesPerSecond = 0.0.obs;
+  final acceptedFramesPerSecond = 0.0.obs;
+  final etaSeconds = RxnInt();
+  final elapsedSeconds = 0.0.obs;
+
   final TransferCollector _collector = TransferCollector();
   bool _handlingCapture = false;
   bool _finished = false;
   bool _disposed = false;
+  DateTime? _sessionStartedAt;
 
   Future<void> onDetect(BarcodeCapture capture) async {
     if (_handlingCapture || _finished || _disposed) return;
@@ -63,7 +74,20 @@ class ReceiveController extends GetxController {
         }
 
         if (result == FrameAcceptResult.accepted) {
+          final firstFrame = _sessionStartedAt == null;
+          _sessionStartedAt ??= DateTime.now();
+
+          sessionId.value = frame.session;
+          originalSize.value = frame.originalSize;
+          transmittedSize.value = frame.transmittedSize;
+          receivedPayloadBytes.value += frame.payload.length;
+
           _syncCollectorState();
+          _updateTelemetry();
+
+          if (firstFrame) {
+            await HapticFeedback.selectionClick();
+          }
         }
 
         if (_collector.isComplete) {
@@ -94,9 +118,20 @@ class ReceiveController extends GetxController {
   Future<void> reset() async {
     _collector.reset();
     _finished = false;
+    _sessionStartedAt = null;
+
     savedPath.value = null;
     error.value = null;
     invalidFrames.value = 0;
+    sessionId.value = null;
+    originalSize.value = 0;
+    transmittedSize.value = 0;
+    receivedPayloadBytes.value = 0;
+    transferRateBytesPerSecond.value = 0;
+    acceptedFramesPerSecond.value = 0;
+    etaSeconds.value = null;
+    elapsedSeconds.value = 0;
+
     _syncCollectorState();
 
     if (!_disposed) await scannerController.start();
@@ -115,6 +150,8 @@ class ReceiveController extends GetxController {
     if (_finished || _disposed) return;
 
     _finished = true;
+    _updateTelemetry();
+    etaSeconds.value = 0;
     await scannerController.stop();
 
     try {
@@ -135,6 +172,7 @@ class ReceiveController extends GetxController {
 
       savedPath.value = file.path;
       error.value = null;
+      await HapticFeedback.heavyImpact();
     } catch (caughtError) {
       _finished = false;
       if (_disposed) return;
@@ -169,6 +207,30 @@ class ReceiveController extends GetxController {
     receivedCount.value = _collector.receivedCount;
     chunkCount.value = _collector.chunkCount;
     progress.value = _collector.progress;
+  }
+
+  void _updateTelemetry() {
+    final startedAt = _sessionStartedAt;
+    if (startedAt == null) return;
+
+    final elapsed = DateTime.now().difference(startedAt).inMilliseconds / 1000;
+    elapsedSeconds.value = elapsed;
+
+    if (elapsed < 0.25) {
+      transferRateBytesPerSecond.value = 0;
+      acceptedFramesPerSecond.value = 0;
+      etaSeconds.value = null;
+      return;
+    }
+
+    final bytesPerSecond = receivedPayloadBytes.value / elapsed;
+    transferRateBytesPerSecond.value = bytesPerSecond;
+    acceptedFramesPerSecond.value = receivedCount.value / elapsed;
+
+    final remaining = transmittedSize.value - receivedPayloadBytes.value;
+    etaSeconds.value = bytesPerSecond > 1 && remaining > 0
+        ? (remaining / bytesPerSecond).ceil()
+        : 0;
   }
 
   @override
