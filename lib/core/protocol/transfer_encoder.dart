@@ -84,9 +84,7 @@ abstract final class TransferEncoder {
     int chunkSize = defaultChunkSize,
   }) async {
     if (original.length > maxFileBytes) {
-      throw ArgumentError(
-        'MVP limit is ${maxFileBytes ~/ (1024 * 1024)} MB.',
-      );
+      throw ArgumentError('MVP limit is ${maxFileBytes ~/ (1024 * 1024)} MB.');
     }
 
     if (chunkSize < 128 || chunkSize > 1200) {
@@ -142,8 +140,8 @@ abstract final class TransferEncoder {
     final base = extension.isEmpty ? safe : safe.substring(0, dot);
 
     final extensionBytes = utf8.encode(extension);
-    final available =
-        (TransferFrame.maxFilenameBytes - extensionBytes.length).clamp(8, 80);
+    final available = (TransferFrame.maxFilenameBytes - extensionBytes.length)
+        .clamp(8, 80);
 
     final builder = StringBuffer();
     var used = 0;

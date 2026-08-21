@@ -16,9 +16,7 @@ class FerryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF14161B),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.08),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         boxShadow: [
           BoxShadow(
             blurRadius: 28,
@@ -27,10 +25,7 @@ class FerryCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: padding,
-        child: child,
-      ),
+      child: Padding(padding: padding, child: child),
     );
   }
 }

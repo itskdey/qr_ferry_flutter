@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../routes/app_routes.dart';
 import '../../widgets/ferry_card.dart';
-import '../receive/receive_screen.dart';
-import '../send/send_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -20,10 +20,9 @@ class HomeScreen extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.16),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.16),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Icon(
@@ -87,26 +86,14 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.arrow_upward_rounded,
               title: 'Send a file',
               subtitle: 'Turn a file into an animated QR stream',
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SendScreen(),
-                  ),
-                );
-              },
+              onTap: () => Get.toNamed<void>(AppRoutes.send),
             ),
             const SizedBox(height: 14),
             _ActionCard(
               icon: Icons.center_focus_strong_rounded,
               title: 'Receive a file',
               subtitle: 'Scan the stream and rebuild it locally',
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const ReceiveScreen(),
-                  ),
-                );
-              },
+              onTap: () => Get.toNamed<void>(AppRoutes.receive),
             ),
             const SizedBox(height: 28),
             FerryCard(
@@ -176,9 +163,7 @@ class _ActionCard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(26),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.08),
-            ),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Row(
             children: [
@@ -186,10 +171,9 @@ class _ActionCard extends StatelessWidget {
                 width: 58,
                 height: 58,
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withValues(alpha: 0.14),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(19),
                 ),
                 child: Icon(

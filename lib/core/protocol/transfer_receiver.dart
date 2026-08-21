@@ -12,10 +12,7 @@ enum FrameAcceptResult {
 }
 
 class RecoveredTransfer {
-  const RecoveredTransfer({
-    required this.filename,
-    required this.bytes,
-  });
+  const RecoveredTransfer({required this.filename, required this.bytes});
 
   final String filename;
   final Uint8List bytes;
@@ -41,8 +38,7 @@ class TransferCollector {
 
   bool get hasSession => _session != null;
 
-  bool get isComplete =>
-      _chunkCount != null && _chunks.length == _chunkCount;
+  bool get isComplete => _chunkCount != null && _chunks.length == _chunkCount;
 
   double get progress {
     final total = _chunkCount;
@@ -92,11 +88,7 @@ class TransferCollector {
     }
 
     if (transmitted.length > _transmittedSize!) {
-      transmitted = Uint8List.sublistView(
-        transmitted,
-        0,
-        _transmittedSize!,
-      );
+      transmitted = Uint8List.sublistView(transmitted, 0, _transmittedSize!);
     }
 
     if (Crc32.ofUint8List(transmitted) != _transmittedCrc) {

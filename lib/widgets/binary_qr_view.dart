@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:qr/qr.dart';
 
 class BinaryQrView extends StatelessWidget {
-  const BinaryQrView({
-    super.key,
-    required this.data,
-    this.padding = 18,
-  });
+  const BinaryQrView({super.key, required this.data, this.padding = 18});
 
   final Uint8List data;
   final double padding;

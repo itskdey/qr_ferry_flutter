@@ -1,140 +1,21 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 import '../../core/protocol/transfer_encoder.dart';
 import '../../core/utils/formatters.dart';
 import '../../widgets/binary_qr_view.dart';
 import '../../widgets/ferry_card.dart';
+import 'send_controller.dart';
 
-class SendScreen extends StatefulWidget {
+class SendScreen extends GetView<SendController> {
   const SendScreen({super.key});
 
   @override
-  State<SendScreen> createState() => _SendScreenState();
-}
-
-class _SendScreenState extends State<SendScreen> {
-  PreparedTransfer? _transfer;
-  bool _preparing = false;
-  bool _playing = false;
-  int _frameIndex = 0;
-  int _loops = 0;
-  int _fps = 8;
-  Timer? _timer;
-  String? _error;
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    super.dispose();
-  }
-
-  Future<void> _pickFile() async {
-    if (_preparing) return;
-
-    setState(() {
-      _preparing = true;
-      _error = null;
-      _transfer = null;
-      _frameIndex = 0;
-      _loops = 0;
-    });
-
-    try {
-      final result = await FilePicker.pickFiles(
-        allowMultiple: false,
-        withData: false,
-      );
-
-      if (result == null || result.files.isEmpty) return;
-
-      final path = result.files.single.path;
-      if (path == null) {
-        throw StateError('The selected file has no local path.');
-      }
-
-      final transfer = await TransferEncoder.prepareFile(File(path));
-
-      if (!mounted) return;
-      setState(() {
-        _transfer = transfer;
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _error = error.toString();
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _preparing = false;
-        });
-      }
-    }
-  }
-
-  void _togglePlayback() {
-    final transfer = _transfer;
-    if (transfer == null) return;
-
-    if (_playing) {
-      _timer?.cancel();
-      setState(() => _playing = false);
-      return;
-    }
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
-    _timer?.cancel();
-    _timer = Timer.periodic(Duration(milliseconds: (1000 / _fps).round()), (_) {
-      if (!mounted) return;
-
-      setState(() {
-        final next = _frameIndex + 1;
-        if (next >= transfer.chunkCount) {
-          _frameIndex = 0;
-          _loops++;
-        } else {
-          _frameIndex = next;
-        }
-      });
-    });
-
-    setState(() => _playing = true);
-  }
-
-  void _setFps(int fps) {
-    if (_fps == fps) return;
-
-    final wasPlaying = _playing;
-    _timer?.cancel();
-
-    setState(() {
-      _fps = fps;
-      _playing = false;
-    });
-
-    if (wasPlaying) {
-      _togglePlayback();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final transfer = _transfer;
+    return Obx(() {
+      final transfer = controller.transfer.value;
 
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (_, _) {
-        _timer?.cancel();
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      },
-      child: Scaffold(
+      return Scaffold(
         appBar: AppBar(
           title: const Text(
             'Send',
@@ -144,20 +25,22 @@ class _SendScreenState extends State<SendScreen> {
             if (transfer != null)
               IconButton(
                 tooltip: 'Choose another file',
-                onPressed: _pickFile,
+                onPressed: controller.pickFile,
                 icon: const Icon(Icons.folder_open_rounded),
               ),
           ],
         ),
         body: SafeArea(
           top: false,
-          child: transfer == null ? _buildEmpty() : _buildTransfer(transfer),
+          child: transfer == null
+              ? _buildEmpty(context)
+              : _buildTransfer(context, transfer),
         ),
-      ),
-    );
+      );
+    });
   }
 
-  Widget _buildEmpty() {
+  Widget _buildEmpty(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
       children: [
@@ -170,7 +53,7 @@ class _SendScreenState extends State<SendScreen> {
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
           child: Center(
-            child: _preparing
+            child: controller.preparing.value
                 ? const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -204,10 +87,10 @@ class _SendScreenState extends State<SendScreen> {
             height: 1.5,
           ),
         ),
-        if (_error != null) ...[
+        if (controller.error.value != null) ...[
           const SizedBox(height: 18),
           Text(
-            _error!,
+            controller.error.value!,
             style: TextStyle(
               color: Theme.of(context).colorScheme.error,
               height: 1.4,
@@ -216,7 +99,7 @@ class _SendScreenState extends State<SendScreen> {
         ],
         const SizedBox(height: 28),
         FilledButton.icon(
-          onPressed: _preparing ? null : _pickFile,
+          onPressed: controller.preparing.value ? null : controller.pickFile,
           icon: const Icon(Icons.add_rounded),
           label: const Text(
             'Choose file',
@@ -236,8 +119,8 @@ class _SendScreenState extends State<SendScreen> {
     );
   }
 
-  Widget _buildTransfer(PreparedTransfer transfer) {
-    final currentFrame = transfer.frameAt(_frameIndex);
+  Widget _buildTransfer(BuildContext context, PreparedTransfer transfer) {
+    final currentFrame = transfer.frameAt(controller.frameIndex.value);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 32),
@@ -279,7 +162,7 @@ class _SendScreenState extends State<SendScreen> {
               ),
               const SizedBox(height: 16),
               LinearProgressIndicator(
-                value: (_frameIndex + 1) / transfer.chunkCount,
+                value: (controller.frameIndex.value + 1) / transfer.chunkCount,
                 minHeight: 7,
                 borderRadius: BorderRadius.circular(999),
               ),
@@ -287,7 +170,8 @@ class _SendScreenState extends State<SendScreen> {
               Row(
                 children: [
                   Text(
-                    'Frame ${_frameIndex + 1} / ${transfer.chunkCount}',
+                    'Frame ${controller.frameIndex.value + 1} / '
+                    '${transfer.chunkCount}',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.52),
                       fontSize: 12,
@@ -295,7 +179,7 @@ class _SendScreenState extends State<SendScreen> {
                   ),
                   const Spacer(),
                   Text(
-                    'loops $_loops',
+                    'loops ${controller.loops.value}',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.52),
                       fontSize: 12,
@@ -314,7 +198,8 @@ class _SendScreenState extends State<SendScreen> {
                     ),
                     const SizedBox(width: 7),
                     Text(
-                      'Compressed to ${Formatters.bytes(transfer.transmittedSize)}',
+                      'Compressed to '
+                      '${Formatters.bytes(transfer.transmittedSize)}',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.58),
                         fontSize: 12,
@@ -338,15 +223,15 @@ class _SendScreenState extends State<SendScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  for (final fps in const [5, 8, 12]) ...[
+                  for (final value in const [5, 8, 12]) ...[
                     Expanded(
                       child: _SpeedButton(
-                        label: '$fps FPS',
-                        selected: _fps == fps,
-                        onTap: () => _setFps(fps),
+                        label: '$value FPS',
+                        selected: controller.fps.value == value,
+                        onTap: () => controller.setFps(value),
                       ),
                     ),
-                    if (fps != 12) const SizedBox(width: 8),
+                    if (value != 12) const SizedBox(width: 8),
                   ],
                 ],
               ),
@@ -364,10 +249,14 @@ class _SendScreenState extends State<SendScreen> {
         ),
         const SizedBox(height: 16),
         FilledButton.icon(
-          onPressed: _togglePlayback,
-          icon: Icon(_playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
+          onPressed: controller.togglePlayback,
+          icon: Icon(
+            controller.playing.value
+                ? Icons.pause_rounded
+                : Icons.play_arrow_rounded,
+          ),
           label: Text(
-            _playing ? 'Pause stream' : 'Start stream',
+            controller.playing.value ? 'Pause stream' : 'Start stream',
             style: const TextStyle(fontWeight: FontWeight.w800),
           ),
         ),

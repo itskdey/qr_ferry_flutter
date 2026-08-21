@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import 'features/home/home_screen.dart';
+import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
 
 class QrFerryApp extends StatelessWidget {
   const QrFerryApp({super.key});
@@ -15,9 +17,11 @@ class QrFerryApp extends StatelessWidget {
       surface: const Color(0xFF111216),
     );
 
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'QR Ferry',
       debugShowCheckedModeBanner: false,
+      initialRoute: AppRoutes.home,
+      getPages: AppPages.pages,
       themeMode: ThemeMode.dark,
       theme: ThemeData(
         useMaterial3: true,
@@ -39,7 +43,6 @@ class QrFerryApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomeScreen(),
     );
   }
 }

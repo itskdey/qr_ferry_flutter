@@ -97,9 +97,7 @@ class TransferFrame {
     }
 
     if (bytes[4] != protocolVersion) {
-      throw InvalidTransferFrame(
-        'Unsupported protocol version ${bytes[4]}.',
-      );
+      throw InvalidTransferFrame('Unsupported protocol version ${bytes[4]}.');
     }
 
     final data = ByteData.sublistView(bytes);
@@ -136,9 +134,7 @@ class TransferFrame {
       allowMalformed: true,
     );
 
-    final payload = Uint8List.fromList(
-      bytes.sublist(payloadOffset, crcOffset),
-    );
+    final payload = Uint8List.fromList(bytes.sublist(payloadOffset, crcOffset));
 
     return TransferFrame(
       session: data.getUint32(6, Endian.little),

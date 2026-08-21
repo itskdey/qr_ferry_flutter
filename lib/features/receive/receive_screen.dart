@@ -1,210 +1,15 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
-import '../../core/protocol/transfer_frame.dart';
-import '../../core/protocol/transfer_receiver.dart';
 import '../../core/utils/formatters.dart';
+import 'receive_controller.dart';
 
-class ReceiveScreen extends StatefulWidget {
+class ReceiveScreen extends GetView<ReceiveController> {
   const ReceiveScreen({super.key});
 
   @override
-  State<ReceiveScreen> createState() => _ReceiveScreenState();
-}
-
-class _ReceiveScreenState extends State<ReceiveScreen> {
-  late final MobileScannerController _scannerController;
-  final TransferCollector _collector = TransferCollector();
-
-  bool _handlingCapture = false;
-  bool _finished = false;
-  String? _savedPath;
-  String? _error;
-  int _invalidFrames = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _scannerController = MobileScannerController(
-      facing: CameraFacing.back,
-      detectionSpeed: DetectionSpeed.unrestricted,
-      formats: const [BarcodeFormat.qrCode],
-      returnImage: false,
-      autoZoom: true,
-    );
-  }
-
-  @override
-  void dispose() {
-    _scannerController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _onDetect(BarcodeCapture capture) async {
-    if (_handlingCapture || _finished) return;
-
-    _handlingCapture = true;
-
-    try {
-      for (final barcode in capture.barcodes) {
-        final bytes = _decodedBytes(barcode);
-        if (bytes == null || bytes.isEmpty) continue;
-
-        TransferFrame frame;
-
-        try {
-          frame = TransferFrame.parse(bytes);
-        } on InvalidTransferFrame {
-          _invalidFrames++;
-          continue;
-        } catch (_) {
-          _invalidFrames++;
-          continue;
-        }
-
-        final result = _collector.accept(frame);
-
-        if (result == FrameAcceptResult.invalidMetadata) {
-          _error = 'A frame had inconsistent transfer metadata.';
-          continue;
-        }
-
-        if (mounted) {
-          setState(() {});
-        }
-
-        if (_collector.isComplete) {
-          await _completeTransfer();
-          break;
-        }
-      }
-    } finally {
-      _handlingCapture = false;
-    }
-  }
-
-  Uint8List? _decodedBytes(Barcode barcode) {
-    final decoded = barcode.rawDecodedBytes;
-
-    if (decoded is DecodedBarcodeBytes) {
-      return decoded.bytes;
-    }
-
-    if (decoded is DecodedVisionBarcodeBytes) {
-      return decoded.bytes;
-    }
-
-    // Legacy fallback. For QR byte mode, rawDecodedBytes is preferred.
-    return barcode.rawBytes;
-  }
-
-  Future<void> _completeTransfer() async {
-    if (_finished) return;
-
-    _finished = true;
-    await _scannerController.stop();
-
-    try {
-      final recovered = _collector.recover();
-      final documents = await getApplicationDocumentsDirectory();
-      final receivedDirectory = Directory(
-        '${documents.path}${Platform.pathSeparator}QR_Ferry_Received',
-      );
-
-      if (!await receivedDirectory.exists()) {
-        await receivedDirectory.create(recursive: true);
-      }
-
-      final file = await _uniqueFile(
-        receivedDirectory,
-        recovered.filename,
-      );
-
-      await file.writeAsBytes(
-        recovered.bytes,
-        flush: true,
-      );
-
-      if (!mounted) return;
-
-      setState(() {
-        _savedPath = file.path;
-        _error = null;
-      });
-    } catch (error) {
-      _finished = false;
-
-      if (!mounted) return;
-
-      setState(() {
-        _error = error.toString();
-      });
-
-      await _scannerController.start();
-    }
-  }
-
-  Future<File> _uniqueFile(Directory directory, String filename) async {
-    final dot = filename.lastIndexOf('.');
-    final hasExtension = dot > 0 && dot < filename.length - 1;
-    final base = hasExtension ? filename.substring(0, dot) : filename;
-    final extension = hasExtension ? filename.substring(dot) : '';
-
-    var candidate = File(
-      '${directory.path}${Platform.pathSeparator}$filename',
-    );
-
-    var index = 1;
-
-    while (await candidate.exists()) {
-      candidate = File(
-        '${directory.path}${Platform.pathSeparator}$base ($index)$extension',
-      );
-      index++;
-    }
-
-    return candidate;
-  }
-
-  Future<void> _shareRecoveredFile() async {
-    final path = _savedPath;
-    if (path == null) return;
-
-    final box = context.findRenderObject() as RenderBox?;
-
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(path)],
-        text: 'Received with QR Ferry',
-        sharePositionOrigin: box == null
-            ? null
-            : box.localToGlobal(Offset.zero) & box.size,
-      ),
-    );
-  }
-
-  Future<void> _reset() async {
-    _collector.reset();
-    _finished = false;
-    _savedPath = null;
-    _error = null;
-    _invalidFrames = 0;
-
-    setState(() {});
-
-    await _scannerController.start();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final savedPath = _savedPath;
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -216,7 +21,7 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
         actions: [
           IconButton(
             tooltip: 'Torch',
-            onPressed: _scannerController.toggleTorch,
+            onPressed: controller.toggleTorch,
             icon: const Icon(Icons.flash_on_rounded),
           ),
         ],
@@ -224,32 +29,51 @@ class _ReceiveScreenState extends State<ReceiveScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          if (savedPath == null)
-            MobileScanner(
-              controller: _scannerController,
-              onDetect: _onDetect,
-            ),
-          if (savedPath == null)
-            const IgnorePointer(
-              child: _ScannerGuide(),
-            ),
+          Obx(
+            () => controller.savedPath.value == null
+                ? MobileScanner(
+                    controller: controller.scannerController,
+                    onDetect: controller.onDetect,
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Obx(
+            () => controller.savedPath.value == null
+                ? const IgnorePointer(child: _ScannerGuide())
+                : const SizedBox.shrink(),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: SafeArea(
               minimum: const EdgeInsets.all(16),
-              child: _BottomPanel(
-                collector: _collector,
-                invalidFrames: _invalidFrames,
-                error: _error,
-                savedPath: savedPath,
-                onShare: _shareRecoveredFile,
-                onReset: _reset,
+              child: Obx(
+                () => _BottomPanel(
+                  hasSession: controller.hasSession.value,
+                  filename: controller.filename.value,
+                  receivedCount: controller.receivedCount.value,
+                  chunkCount: controller.chunkCount.value,
+                  progress: controller.progress.value,
+                  invalidFrames: controller.invalidFrames.value,
+                  error: controller.error.value,
+                  savedPath: controller.savedPath.value,
+                  onShare: () => _shareRecoveredFile(context),
+                  onReset: controller.reset,
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _shareRecoveredFile(BuildContext context) {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box == null
+        ? null
+        : box.localToGlobal(Offset.zero) & box.size;
+
+    controller.shareRecoveredFile(origin);
   }
 }
 
@@ -263,9 +87,7 @@ class _ScannerGuide extends StatelessWidget {
         widthFactor: 0.78,
         child: AspectRatio(
           aspectRatio: 1,
-          child: CustomPaint(
-            painter: _GuidePainter(),
-          ),
+          child: CustomPaint(painter: _GuidePainter()),
         ),
       ),
     );
@@ -304,12 +126,7 @@ class _GuidePainter extends CustomPainter {
       ..lineTo(size.width, corner)
       ..moveTo(size.width, size.height - corner)
       ..lineTo(size.width, size.height - 12)
-      ..quadraticBezierTo(
-        size.width,
-        size.height,
-        size.width - 12,
-        size.height,
-      )
+      ..quadraticBezierTo(size.width, size.height, size.width - 12, size.height)
       ..lineTo(size.width - corner, size.height)
       ..moveTo(corner, size.height)
       ..lineTo(12, size.height)
@@ -325,7 +142,11 @@ class _GuidePainter extends CustomPainter {
 
 class _BottomPanel extends StatelessWidget {
   const _BottomPanel({
-    required this.collector,
+    required this.hasSession,
+    required this.filename,
+    required this.receivedCount,
+    required this.chunkCount,
+    required this.progress,
     required this.invalidFrames,
     required this.error,
     required this.savedPath,
@@ -333,7 +154,11 @@ class _BottomPanel extends StatelessWidget {
     required this.onReset,
   });
 
-  final TransferCollector collector;
+  final bool hasSession;
+  final String? filename;
+  final int receivedCount;
+  final int chunkCount;
+  final double progress;
   final int invalidFrames;
   final String? error;
   final String? savedPath;
@@ -342,8 +167,6 @@ class _BottomPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final complete = savedPath != null;
-
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 560),
@@ -351,9 +174,7 @@ class _BottomPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xEE15171C),
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.09),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.09)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.35),
@@ -362,15 +183,13 @@ class _BottomPanel extends StatelessWidget {
           ),
         ],
       ),
-      child: complete
+      child: savedPath != null
           ? _buildComplete(context)
           : _buildScanning(context),
     );
   }
 
   Widget _buildScanning(BuildContext context) {
-    final hasSession = collector.hasSession;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -380,10 +199,9 @@ class _BottomPanel extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.15),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(
@@ -400,7 +218,7 @@ class _BottomPanel extends StatelessWidget {
                 children: [
                   Text(
                     hasSession
-                        ? collector.filename ?? 'Receiving file'
+                        ? filename ?? 'Receiving file'
                         : 'Point at the sender',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -412,7 +230,7 @@ class _BottomPanel extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     hasSession
-                        ? '${collector.receivedCount} / ${collector.chunkCount} unique frames'
+                        ? '$receivedCount / $chunkCount unique frames'
                         : 'Keep the complete QR inside the guide',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.52),
@@ -423,16 +241,14 @@ class _BottomPanel extends StatelessWidget {
               ),
             ),
             Text(
-              Formatters.percent(collector.progress),
-              style: const TextStyle(
-                fontWeight: FontWeight.w900,
-              ),
+              Formatters.percent(progress),
+              style: const TextStyle(fontWeight: FontWeight.w900),
             ),
           ],
         ),
         const SizedBox(height: 14),
         LinearProgressIndicator(
-          value: collector.progress,
+          value: progress,
           minHeight: 8,
           borderRadius: BorderRadius.circular(999),
         ),
@@ -480,19 +296,14 @@ class _BottomPanel extends StatelessWidget {
         const SizedBox(height: 14),
         const Text(
           'Transfer complete',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: 6),
         Text(
-          collector.filename ?? 'File recovered',
+          filename ?? 'File recovered',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.55),
-          ),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.55)),
         ),
         const SizedBox(height: 16),
         Row(
@@ -513,9 +324,7 @@ class _BottomPanel extends StatelessWidget {
             Expanded(
               child: FilledButton(
                 onPressed: onShare,
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(0, 50),
-                ),
+                style: FilledButton.styleFrom(minimumSize: const Size(0, 50)),
                 child: const Text(
                   'Share / Save',
                   style: TextStyle(fontWeight: FontWeight.w800),

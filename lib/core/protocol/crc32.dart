@@ -4,9 +4,7 @@ abstract final class Crc32 {
   static final List<int> _table = List<int>.generate(256, (index) {
     var crc = index;
     for (var bit = 0; bit < 8; bit++) {
-      crc = (crc & 1) == 1
-          ? 0xEDB88320 ^ (crc >>> 1)
-          : crc >>> 1;
+      crc = (crc & 1) == 1 ? 0xEDB88320 ^ (crc >>> 1) : crc >>> 1;
     }
     return crc & 0xFFFFFFFF;
   }, growable: false);

@@ -183,7 +183,10 @@ Because this MVP sends numbered chunks rather than fountain-coded symbols, one m
 ```text
 lib/
 ├── main.dart                         # Flutter entry point and orientation
-├── app.dart                          # Material app and theme
+├── app.dart                          # GetMaterialApp and theme
+├── routes/
+│   ├── app_routes.dart               # Named route constants
+│   └── app_pages.dart                # GetPage and binding registration
 ├── core/
 │   ├── protocol/
 │   │   ├── crc32.dart                # CRC32 implementation
@@ -194,22 +197,30 @@ lib/
 │       └── formatters.dart           # Byte and percentage formatting
 ├── features/
 │   ├── home/home_screen.dart         # Send/receive landing screen
-│   ├── send/send_screen.dart         # File selection and QR playback
-│   └── receive/receive_screen.dart   # Scanning, progress, save, and share
+│   ├── send/
+│   │   ├── send_binding.dart         # Send dependency registration
+│   │   ├── send_controller.dart      # File and playback state/lifecycle
+│   │   └── send_screen.dart          # Reactive sender UI
+│   └── receive/
+│       ├── receive_binding.dart      # Receive dependency registration
+│       ├── receive_controller.dart   # Scanner and recovery state/lifecycle
+│       └── receive_screen.dart       # Reactive receiver UI
 └── widgets/
     ├── binary_qr_view.dart           # Raw-byte QR renderer
     └── ferry_card.dart               # Shared card component
 
 test/
-└── protocol_test.dart                # CRC, frame, and reconstruction tests
+├── protocol_test.dart                # CRC, frame, and reconstruction tests
+└── getx_navigation_test.dart         # Route injection/disposal widget test
 ```
 
-The protocol code is separated from the UI so that a future native or Rust codec can replace the current chunking strategy without requiring a complete interface rewrite.
+The protocol code is separated from the UI so that a future native or Rust codec can replace the current chunking strategy without requiring a complete interface rewrite. Application state uses GetX: named routes load feature-scoped bindings, `GetxController` classes own mutable state and resource lifecycles, and screens render reactive values with `Obx`. GetX removes each feature controller when its route closes.
 
 ## Main dependencies
 
 | Package | Purpose |
 | --- | --- |
+| `get` | Reactive state, dependency injection, and named routing |
 | `file_picker` | Select a local file on the sender |
 | `qr` | Create QR matrices from binary data |
 | `mobile_scanner` | Decode QR frames from the camera |
@@ -233,7 +244,7 @@ Run the automated protocol tests:
 flutter test
 ```
 
-The current tests cover the standard CRC32 test vector, binary frame serialization/parsing with a Unicode filename, and complete reconstruction from out-of-order frames.
+The current tests cover the standard CRC32 test vector, binary frame serialization/parsing with a Unicode filename, complete reconstruction from out-of-order frames, and GetX controller creation/disposal through named navigation.
 
 Build release artifacts with the usual Flutter commands:
 
