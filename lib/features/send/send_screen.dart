@@ -16,19 +16,32 @@ class SendScreen extends GetView<SendController> {
       final transfer = controller.transfer.value;
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Send', style: TextStyle(fontWeight: FontWeight.w900)),
+          title: const Text(
+            'Send',
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
           actions: [
             if (transfer != null)
-              TextButton(
-                onPressed: controller.pickFile,
-                child: const Text('CHANGE FILE'),
+              MotionReveal(
+                child: TextButton(
+                  onPressed: controller.pickFile,
+                  child: const Text('CHANGE FILE'),
+                ),
               ),
           ],
         ),
         body: PaperGrid(
           child: SafeArea(
             top: false,
-            child: transfer == null ? _emptyState() : _transferState(transfer),
+            child: MotionSwitcher(
+              duration: const Duration(milliseconds: 360),
+              child: KeyedSubtree(
+                key: ValueKey(transfer == null ? 'empty' : 'transfer'),
+                child: transfer == null
+                    ? _emptyState()
+                    : _transferState(transfer),
+              ),
+            ),
           ),
         ),
       );
@@ -39,101 +52,145 @@ class SendScreen extends GetView<SendController> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 40),
       children: [
-        const TechLabel('Air-gapped file transfer'),
+        const MotionReveal(
+          delay: Duration(milliseconds: 50),
+          child: TechLabel('Air-gapped file transfer'),
+        ),
         const SizedBox(height: 18),
-        const Text(
-          'Move a file\nthrough the camera.',
-          style: TextStyle(
-            color: QrFerryDesign.ink,
-            fontSize: 52,
-            height: 0.9,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -3.5,
+        const MotionReveal(
+          delay: Duration(milliseconds: 100),
+          offsetY: 18,
+          child: Text(
+            'Move a file\nthrough the camera.',
+            style: TextStyle(
+              color: QrFerryDesign.ink,
+              fontSize: 52,
+              height: 0.9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -3.5,
+            ),
           ),
         ),
         const SizedBox(height: 32),
-        HardShadowBox(
-          color: const Color(0xFFFCFBF8),
-          shadowOffset: 9,
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const StepHeading(
-                number: '01',
-                title: 'Choose a file',
-                subtitle: 'Compression and encoding stay on this device.',
-              ),
-              const SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 34),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFA7AAA9)),
-                  color: QrFerryDesign.ink.withValues(alpha: 0.018),
+        MotionReveal(
+          delay: const Duration(milliseconds: 160),
+          child: HardShadowBox(
+            color: const Color(0xFFFCFBF8),
+            shadowOffset: 9,
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const StepHeading(
+                  number: '01',
+                  title: 'Choose a file',
+                  subtitle: 'Compression and encoding stay on this device.',
                 ),
-                child: Column(
-                  children: [
-                    if (controller.preparing.value)
-                      const CircularProgressIndicator(color: QrFerryDesign.ink)
-                    else
-                      InkWell(
-                        onTap: controller.pickFile,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 3, bottom: 3),
-                          color: QrFerryDesign.ink,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-                            color: Colors.white,
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('＋', style: TextStyle(fontSize: 18)),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Browse files',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w800,
+                const SizedBox(height: 24),
+                AnimatedContainer(
+                  duration: QrFerryMotion.standard,
+                  curve: QrFerryMotion.emphasized,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 34,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFA7AAA9)),
+                    color: controller.preparing.value
+                        ? QrFerryDesign.signal.withValues(alpha: 0.08)
+                        : QrFerryDesign.ink.withValues(alpha: 0.018),
+                  ),
+                  child: Column(
+                    children: [
+                      MotionSwitcher(
+                        child: controller.preparing.value
+                            ? const SizedBox(
+                                key: ValueKey('preparing'),
+                                width: 28,
+                                height: 28,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.2,
+                                  color: QrFerryDesign.ink,
+                                ),
+                              )
+                            : Pressable(
+                                key: const ValueKey('browse'),
+                                onTap: controller.pickFile,
+                                child: Container(
+                                  padding: const EdgeInsets.only(
+                                    right: 3,
+                                    bottom: 3,
+                                  ),
+                                  color: QrFerryDesign.ink,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 18,
+                                      vertical: 13,
+                                    ),
+                                    color: Colors.white,
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('＋', style: TextStyle(fontSize: 18)),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'Browse files',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ],
+                              ),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        'up to ${TransferEncoder.maxFileBytes ~/ (1024 * 1024)} MB',
+                        style: const TextStyle(
+                          color: QrFerryDesign.muted,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                AnimatedSize(
+                  duration: QrFerryMotion.standard,
+                  curve: QrFerryMotion.emphasized,
+                  child: controller.error.value == null
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: MotionReveal(
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(12),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFFFF0EB),
+                                border: Border(
+                                  left: BorderSide(
+                                    color: QrFerryDesign.red,
+                                    width: 3,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                controller.error.value!,
+                                style: const TextStyle(
+                                  color: Color(0xFF842F21),
+                                  fontSize: 12,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    const SizedBox(height: 14),
-                    Text(
-                      'up to ${TransferEncoder.maxFileBytes ~/ (1024 * 1024)} MB',
-                      style: const TextStyle(
-                        color: QrFerryDesign.muted,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (controller.error.value != null) ...[
-                const SizedBox(height: 16),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFF0EB),
-                    border: Border(
-                      left: BorderSide(color: QrFerryDesign.red, width: 3),
-                    ),
-                  ),
-                  child: Text(
-                    controller.error.value!,
-                    style: const TextStyle(
-                      color: Color(0xFF842F21),
-                      fontSize: 12,
-                    ),
-                  ),
                 ),
               ],
-            ],
+            ),
           ),
         ),
       ],
@@ -143,6 +200,7 @@ class SendScreen extends GetView<SendController> {
   Widget _transferState(PreparedTransfer transfer) {
     final currentFrame = transfer.frameAt(controller.frameIndex.value);
     final progress = (controller.frameIndex.value + 1) / transfer.chunkCount;
+    final playing = controller.playing.value;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
@@ -161,14 +219,30 @@ class SendScreen extends GetView<SendController> {
                 inverse: true,
               ),
               const SizedBox(height: 24),
-              Container(
+              AnimatedContainer(
+                duration: QrFerryMotion.standard,
+                curve: QrFerryMotion.emphasized,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: QrFerryDesign.darkStage,
-                  border: Border.all(color: const Color(0xFF35404C)),
+                  border: Border.all(
+                    color: playing
+                        ? QrFerryDesign.signal.withValues(alpha: 0.68)
+                        : const Color(0xFF35404C),
+                  ),
+                  boxShadow: playing
+                      ? [
+                          BoxShadow(
+                            color: QrFerryDesign.signal.withValues(alpha: 0.07),
+                            spreadRadius: 4,
+                          ),
+                        ]
+                      : null,
                 ),
                 child: Stack(
                   children: [
+                    // QR frames intentionally switch immediately. Tweening the
+                    // actual code can create unreadable intermediate frames.
                     BinaryQrView(data: currentFrame, padding: 12),
                     const Positioned(
                       top: 0,
@@ -186,44 +260,53 @@ class SendScreen extends GetView<SendController> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Container(
-                    width: 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: controller.playing.value
-                          ? QrFerryDesign.signal
-                          : QrFerryDesign.muted,
-                      shape: BoxShape.circle,
-                    ),
+                  PulseDot(
+                    color: playing
+                        ? QrFerryDesign.signal
+                        : QrFerryDesign.muted,
+                    active: playing,
+                    size: 7,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    controller.playing.value
-                        ? 'Broadcasting'
-                        : 'Ready to broadcast',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
+                  MotionSwitcher(
+                    child: Text(
+                      playing ? 'Broadcasting' : 'Ready to broadcast',
+                      key: ValueKey(playing),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                   const Spacer(),
-                  Text(
-                    '${controller.fps.value} FPS',
-                    style: const TextStyle(
-                      color: Color(0xFF909AA4),
+                  AnimatedDefaultTextStyle(
+                    duration: QrFerryMotion.standard,
+                    curve: QrFerryMotion.emphasized,
+                    style: TextStyle(
+                      color: playing
+                          ? QrFerryDesign.signal
+                          : const Color(0xFF909AA4),
                       fontFamily: 'monospace',
                       fontSize: 10,
+                      fontWeight: playing ? FontWeight.w800 : FontWeight.w400,
                     ),
+                    child: Text('${controller.fps.value} FPS'),
                   ),
                 ],
               ),
               const SizedBox(height: 14),
-              Container(
+              AnimatedContainer(
+                duration: QrFerryMotion.standard,
+                curve: QrFerryMotion.emphasized,
                 padding: const EdgeInsets.all(13),
                 decoration: BoxDecoration(
                   color: QrFerryDesign.darkInset,
-                  border: Border.all(color: const Color(0xFF35404C)),
+                  border: Border.all(
+                    color: playing
+                        ? const Color(0xFF46535E)
+                        : const Color(0xFF35404C),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -242,24 +325,27 @@ class SendScreen extends GetView<SendController> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Text(
-                          '${controller.frameIndex.value + 1} / ${transfer.chunkCount}',
-                          style: const TextStyle(
-                            color: Color(0xFF909AA4),
-                            fontFamily: 'monospace',
-                            fontSize: 9,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 140),
+                          child: Text(
+                            '${controller.frameIndex.value + 1} / ${transfer.chunkCount}',
+                            key: ValueKey(controller.frameIndex.value),
+                            style: const TextStyle(
+                              color: Color(0xFF909AA4),
+                              fontFamily: 'monospace',
+                              fontSize: 9,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    LinearProgressIndicator(
+                    SmoothProgress(
                       value: progress,
-                      minHeight: 5,
-                      backgroundColor: const Color(0xFF303A44),
-                      valueColor: const AlwaysStoppedAnimation(
-                        QrFerryDesign.signal,
-                      ),
+                      height: 5,
+                      foreground: QrFerryDesign.signal,
+                      background: const Color(0xFF303A44),
+                      duration: const Duration(milliseconds: 120),
                     ),
                     const SizedBox(height: 11),
                     Row(
@@ -289,17 +375,24 @@ class SendScreen extends GetView<SendController> {
                 ),
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: controller.togglePlayback,
-                  icon: Icon(
-                    controller.playing.value ? Icons.pause : Icons.play_arrow,
-                  ),
-                  label: Text(
-                    controller.playing.value
-                        ? 'Pause stream'
-                        : 'Start QR stream',
+              Pressable(
+                onTap: controller.togglePlayback,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: controller.togglePlayback,
+                    icon: MotionSwitcher(
+                      child: Icon(
+                        playing ? Icons.pause : Icons.play_arrow,
+                        key: ValueKey(playing),
+                      ),
+                    ),
+                    label: MotionSwitcher(
+                      child: Text(
+                        playing ? 'Pause stream' : 'Start QR stream',
+                        key: ValueKey(playing),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -324,51 +417,63 @@ class SendScreen extends GetView<SendController> {
           ),
         ),
         const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(13),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: QrFerryDesign.line),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 35,
-                height: 40,
-                color: QrFerryDesign.blue,
-                child: const Icon(Icons.arrow_upward, color: Colors.white),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      transfer.filename,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${Formatters.bytes(transfer.originalSize)}${transfer.compressed ? ' → ${Formatters.bytes(transfer.transmittedSize)}' : ''} · loops ${controller.loops.value}',
-                      style: const TextStyle(
-                        color: QrFerryDesign.muted,
-                        fontFamily: 'monospace',
-                        fontSize: 9,
-                      ),
-                    ),
-                  ],
+        MotionReveal(
+          delay: const Duration(milliseconds: 80),
+          child: AnimatedContainer(
+            duration: QrFerryMotion.standard,
+            curve: QrFerryMotion.emphasized,
+            padding: const EdgeInsets.all(13),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: QrFerryDesign.line),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 35,
+                  height: 40,
+                  color: QrFerryDesign.blue,
+                  child: const Icon(Icons.arrow_upward, color: Colors.white),
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        transfer.filename,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      AnimatedSwitcher(
+                        duration: QrFerryMotion.quick,
+                        child: Text(
+                          '${Formatters.bytes(transfer.originalSize)}${transfer.compressed ? ' → ${Formatters.bytes(transfer.transmittedSize)}' : ''} · loops ${controller.loops.value}',
+                          key: ValueKey(controller.loops.value),
+                          style: const TextStyle(
+                            color: QrFerryDesign.muted,
+                            fontFamily: 'monospace',
+                            fontSize: 9,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 22),
-        const _ProtocolStrip(),
+        const MotionReveal(
+          delay: Duration(milliseconds: 140),
+          child: _ProtocolStrip(),
+        ),
       ],
     );
   }
@@ -387,46 +492,67 @@ class _PresetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Pressable(
       onTap: onTap,
-      child: Container(
+      pressedScale: 0.994,
+      pressedOffset: 1.5,
+      child: AnimatedContainer(
+        duration: QrFerryMotion.standard,
+        curve: QrFerryMotion.emphasized,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         decoration: BoxDecoration(
           color: selected ? Colors.white : Colors.transparent,
           border: Border.all(
             color: selected ? QrFerryDesign.ink : QrFerryDesign.line,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: QrFerryDesign.ink.withValues(alpha: 0.06),
+                    offset: const Offset(2, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           children: [
-            Container(
+            AnimatedContainer(
+              duration: QrFerryMotion.standard,
+              curve: QrFerryMotion.emphasized,
               width: 14,
               height: 14,
               decoration: BoxDecoration(
+                color: selected ? QrFerryDesign.signal : Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: QrFerryDesign.ink,
-                  width: selected ? 4 : 1,
+                  width: selected ? 3 : 1,
                 ),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                fps == 5 ? 'Robust' : fps == 8 ? 'Balanced' : 'Turbo',
-                style: const TextStyle(
+              child: AnimatedDefaultTextStyle(
+                duration: QrFerryMotion.standard,
+                style: TextStyle(
+                  color: QrFerryDesign.ink,
                   fontSize: 12,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: selected ? FontWeight.w900 : FontWeight.w800,
+                ),
+                child: Text(
+                  fps == 5 ? 'Robust' : fps == 8 ? 'Balanced' : 'Turbo',
                 ),
               ),
             ),
-            Text(
-              '$fps FPS',
-              style: const TextStyle(
-                color: QrFerryDesign.muted,
+            AnimatedDefaultTextStyle(
+              duration: QrFerryMotion.standard,
+              style: TextStyle(
+                color: selected ? QrFerryDesign.ink : QrFerryDesign.muted,
                 fontFamily: 'monospace',
                 fontSize: 9,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w400,
               ),
+              child: Text('$fps FPS'),
             ),
           ],
         ),
@@ -509,6 +635,10 @@ class _ProtocolStrip extends StatelessWidget {
 }
 
 String _sessionCode(int sessionId) {
-  final hex = sessionId.toUnsigned(32).toRadixString(16).padLeft(8, '0').toUpperCase();
+  final hex = sessionId
+      .toUnsigned(32)
+      .toRadixString(16)
+      .padLeft(8, '0')
+      .toUpperCase();
   return '${hex.substring(0, 4)}-${hex.substring(4)}';
 }
