@@ -201,12 +201,15 @@ class _Header extends StatelessWidget {
         index: 0,
         child: Row(
           children: [
-            const Text(
-              'QRFerry',
-              style: TextStyle(
-                fontSize: 23,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
+            Hero(
+              tag: 'QRFerry',
+              child: const Text(
+                'QRFerry',
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                ),
               ),
             ),
             const Spacer(),

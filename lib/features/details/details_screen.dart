@@ -23,9 +23,7 @@ class DetailsScreen extends StatelessWidget {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 34, 20, 48),
                   children: [
-                    const MotionReveal(
-                      child: TechLabel('Project details'),
-                    ),
+                    const MotionReveal(child: TechLabel('Project details')),
                     const SizedBox(height: 14),
                     const MotionReveal(
                       delay: Duration(milliseconds: 40),
@@ -81,7 +79,8 @@ class DetailsScreen extends StatelessWidget {
                     const _SectionTitle(
                       number: '02',
                       title: 'How it works',
-                      subtitle: 'One file. Two devices. The camera is the link.',
+                      subtitle:
+                          'One file. Two devices. The camera is the link.',
                     ),
                     const SizedBox(height: 14),
                     const _TransferPipeline(),
@@ -89,7 +88,8 @@ class DetailsScreen extends StatelessWidget {
                     const _SectionTitle(
                       number: '03',
                       title: 'Under the hood',
-                      subtitle: 'The current MVP keeps the protocol intentionally small.',
+                      subtitle:
+                          'The current MVP keeps the protocol intentionally small.',
                     ),
                     const SizedBox(height: 14),
                     const _ProtocolGrid(),
@@ -97,7 +97,8 @@ class DetailsScreen extends StatelessWidget {
                     const _SectionTitle(
                       number: '04',
                       title: 'Privacy & security',
-                      subtitle: 'What QRFerry does—and what it deliberately does not claim.',
+                      subtitle:
+                          'What QRFerry does—and what it deliberately does not claim.',
                     ),
                     const SizedBox(height: 14),
                     const _PrivacyCard(),
@@ -105,7 +106,8 @@ class DetailsScreen extends StatelessWidget {
                     const _SectionTitle(
                       number: '05',
                       title: 'Current limits',
-                      subtitle: 'Important constraints of the present protocol.',
+                      subtitle:
+                          'Important constraints of the present protocol.',
                     ),
                     const SizedBox(height: 14),
                     const _LimitationsCard(),
@@ -113,7 +115,8 @@ class DetailsScreen extends StatelessWidget {
                     const _SectionTitle(
                       number: '06',
                       title: 'Report a problem',
-                      subtitle: 'Good bug reports make the optical link better.',
+                      subtitle:
+                          'Good bug reports make the optical link better.',
                     ),
                     const SizedBox(height: 14),
                     _ReportCard(
@@ -124,7 +127,8 @@ class DetailsScreen extends StatelessWidget {
                     const _SectionTitle(
                       number: '07',
                       title: 'Open source',
-                      subtitle: 'Explore the implementation, protocol, and history.',
+                      subtitle:
+                          'Explore the implementation, protocol, and history.',
                     ),
                     const SizedBox(height: 14),
                     _OpenSourceCard(onCopyRepository: () => _copyRepo(context)),
@@ -147,9 +151,7 @@ class DetailsScreen extends StatelessWidget {
   }
 
   Future<void> _copyRepo(BuildContext context) async {
-    await Clipboard.setData(
-      const ClipboardData(text: 'https://$_repoUrl'),
-    );
+    await Clipboard.setData(const ClipboardData(text: 'https://$_repoUrl'));
     if (!context.mounted) return;
     _showCopied(context, 'Repository link copied');
   }
@@ -220,9 +222,7 @@ class _DetailsHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: const BoxDecoration(
         color: QrFerryDesign.paper,
-        border: Border(
-          bottom: BorderSide(color: QrFerryDesign.line),
-        ),
+        border: Border(bottom: BorderSide(color: QrFerryDesign.line)),
       ),
       child: Row(
         children: [
@@ -247,13 +247,16 @@ class _DetailsHeader extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          const Text(
-            'QRFerry',
-            style: TextStyle(
-              color: QrFerryDesign.ink,
-              fontSize: 17,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.7,
+          Hero(
+            tag: 'QRFerry',
+            child: const Text(
+              'QRFerry',
+              style: TextStyle(
+                color: QrFerryDesign.ink,
+                fontSize: 17,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.7,
+              ),
             ),
           ),
         ],
@@ -469,38 +472,40 @@ class _DarkTag extends StatelessWidget {
 class _TransferPipeline extends StatelessWidget {
   const _TransferPipeline();
 
-  static const _steps = <({String number, String title, String detail, IconData icon})>[
-    (
-      number: '01',
-      title: 'Select',
-      detail: 'Pick a local file. Nothing is uploaded.',
-      icon: Icons.insert_drive_file_outlined,
-    ),
-    (
-      number: '02',
-      title: 'Prepare',
-      detail: 'CRC32, optional gzip, metadata, then numbered chunks.',
-      icon: Icons.memory_rounded,
-    ),
-    (
-      number: '03',
-      title: 'Broadcast',
-      detail: 'Each chunk becomes a raw binary QR frame and loops on screen.',
-      icon: Icons.qr_code_2_rounded,
-    ),
-    (
-      number: '04',
-      title: 'Scan',
-      detail: 'The other device collects unique frames in any order.',
-      icon: Icons.center_focus_strong_rounded,
-    ),
-    (
-      number: '05',
-      title: 'Verify',
-      detail: 'Reassemble, validate CRC/size, decompress, preview, save.',
-      icon: Icons.verified_outlined,
-    ),
-  ];
+  static const _steps =
+      <({String number, String title, String detail, IconData icon})>[
+        (
+          number: '01',
+          title: 'Select',
+          detail: 'Pick a local file. Nothing is uploaded.',
+          icon: Icons.insert_drive_file_outlined,
+        ),
+        (
+          number: '02',
+          title: 'Prepare',
+          detail: 'CRC32, optional gzip, metadata, then numbered chunks.',
+          icon: Icons.memory_rounded,
+        ),
+        (
+          number: '03',
+          title: 'Broadcast',
+          detail:
+              'Each chunk becomes a raw binary QR frame and loops on screen.',
+          icon: Icons.qr_code_2_rounded,
+        ),
+        (
+          number: '04',
+          title: 'Scan',
+          detail: 'The other device collects unique frames in any order.',
+          icon: Icons.center_focus_strong_rounded,
+        ),
+        (
+          number: '05',
+          title: 'Verify',
+          detail: 'Reassemble, validate CRC/size, decompress, preview, save.',
+          icon: Icons.verified_outlined,
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -513,7 +518,10 @@ class _TransferPipeline extends StatelessWidget {
         child: Column(
           children: [
             for (var index = 0; index < _steps.length; index++) ...[
-              _PipelineRow(step: _steps[index], isLast: index == _steps.length - 1),
+              _PipelineRow(
+                step: _steps[index],
+                isLast: index == _steps.length - 1,
+              ),
             ],
           ],
         ),
@@ -535,9 +543,7 @@ class _PipelineRow extends StatelessWidget {
       decoration: BoxDecoration(
         border: isLast
             ? null
-            : const Border(
-                bottom: BorderSide(color: QrFerryDesign.line),
-              ),
+            : const Border(bottom: BorderSide(color: QrFerryDesign.line)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,7 +563,9 @@ class _PipelineRow extends StatelessWidget {
           Container(
             width: 38,
             height: 38,
-            color: step.number == '03' ? QrFerryDesign.signal : QrFerryDesign.ink,
+            color: step.number == '03'
+                ? QrFerryDesign.signal
+                : QrFerryDesign.ink,
             child: Icon(
               step.icon,
               size: 19,
@@ -695,19 +703,23 @@ class _PrivacyCard extends StatelessWidget {
           SizedBox(height: 15),
           _FactLine(
             icon: Icons.cloud_off_outlined,
-            text: 'No backend, account, upload path, Wi-Fi, or Bluetooth is required.',
+            text:
+                'No backend, account, upload path, Wi-Fi, or Bluetooth is required.',
           ),
           _FactLine(
             icon: Icons.visibility_outlined,
-            text: 'The QR stream is visible and is not encrypted in the current MVP.',
+            text:
+                'The QR stream is visible and is not encrypted in the current MVP.',
           ),
           _FactLine(
             icon: Icons.shield_outlined,
-            text: 'CRC32 detects accidental corruption; it is not authentication.',
+            text:
+                'CRC32 detects accidental corruption; it is not authentication.',
           ),
           _FactLine(
             icon: Icons.videocam_outlined,
-            text: 'Someone who records the complete optical stream may reconstruct the file.',
+            text:
+                'Someone who records the complete optical stream may reconstruct the file.',
             last: true,
           ),
         ],
@@ -772,7 +784,9 @@ class _LimitationsCard extends StatelessWidget {
           children: [
             for (var i = 0; i < _items.length; i++)
               Padding(
-                padding: EdgeInsets.only(bottom: i == _items.length - 1 ? 0 : 12),
+                padding: EdgeInsets.only(
+                  bottom: i == _items.length - 1 ? 0 : 12,
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -959,11 +973,18 @@ class _OpenSourceCard extends StatelessWidget {
               onTap: onCopyRepository,
               pressedOffset: 2,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 11,
+                ),
                 color: QrFerryDesign.ink,
                 child: const Row(
                   children: [
-                    Icon(Icons.code_rounded, color: QrFerryDesign.signal, size: 18),
+                    Icon(
+                      Icons.code_rounded,
+                      color: QrFerryDesign.signal,
+                      size: 18,
+                    ),
                     SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -1057,10 +1078,7 @@ class _Footer extends StatelessWidget {
         Text(
           'Developed by Mean Pheakdey · @itskdey',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: QrFerryDesign.muted,
-            fontSize: 11,
-          ),
+          style: TextStyle(color: QrFerryDesign.muted, fontSize: 11),
         ),
       ],
     );
