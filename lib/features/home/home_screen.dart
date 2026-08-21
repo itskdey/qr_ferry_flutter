@@ -206,10 +206,59 @@ class _Header extends StatelessWidget {
           Hero(
             tag: 'QRFerry',
             transitionOnUserGestures: true,
-            createRectTween: (begin, end) => MaterialRectCenterArcTween(
-              begin: begin,
-              end: end,
-            ),
+            createRectTween: (begin, end) =>
+                MaterialRectCenterArcTween(begin: begin, end: end),
+            flightShuttleBuilder:
+                (
+                  flightContext,
+                  animation,
+                  flightDirection,
+                  fromHeroContext,
+                  toHeroContext,
+                ) {
+                  // Pull the "from" and "to" styles straight off the Hero children
+                  final fromText = fromHeroContext.widget as Hero;
+                  final toText = toHeroContext.widget as Hero;
+
+                  // Simpler & safer: just hardcode the two known styles here
+                  const beginStyle = TextStyle(
+                    color: QrFerryDesign.ink,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.7,
+                  );
+                  const endStyle = TextStyle(
+                    color: QrFerryDesign.ink,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.8,
+                  );
+
+                  final isPush = flightDirection == HeroFlightDirection.push;
+
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        // Ease the curve so it doesn't feel linear/robotic
+                        final t = Curves.easeInOutCubic.transform(
+                          animation.value,
+                        );
+                        final style = TextStyle.lerp(
+                          isPush ? beginStyle : endStyle,
+                          isPush ? endStyle : beginStyle,
+                          t,
+                        );
+                        return Text(
+                          'QRFerry',
+                          textScaler: TextScaler.noScaling,
+                          style: style,
+                        );
+                      },
+                    ),
+                  );
+                },
             child: const Material(
               type: MaterialType.transparency,
               child: Text(
@@ -217,9 +266,9 @@ class _Header extends StatelessWidget {
                 textScaler: TextScaler.noScaling,
                 style: TextStyle(
                   color: QrFerryDesign.ink,
-                  fontSize: 23,
+                  fontSize: 17, // or 23 on the home screen
                   fontWeight: FontWeight.w900,
-                  letterSpacing: -0.8,
+                  letterSpacing: -0.7, // or -0.8 on the home screen
                 ),
               ),
             ),

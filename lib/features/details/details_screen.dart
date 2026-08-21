@@ -249,13 +249,71 @@ class _DetailsHeader extends StatelessWidget {
           const Spacer(),
           Hero(
             tag: 'QRFerry',
-            child: const Text(
-              'QRFerry',
-              style: TextStyle(
-                color: QrFerryDesign.ink,
-                fontSize: 17,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.7,
+            transitionOnUserGestures: true,
+            createRectTween: (begin, end) =>
+                MaterialRectCenterArcTween(begin: begin, end: end),
+            flightShuttleBuilder:
+                (
+                  flightContext,
+                  animation,
+                  flightDirection,
+                  fromHeroContext,
+                  toHeroContext,
+                ) {
+                  // Pull the "from" and "to" styles straight off the Hero children
+                  final fromText = fromHeroContext.widget as Hero;
+                  final toText = toHeroContext.widget as Hero;
+
+                  // Simpler & safer: just hardcode the two known styles here
+                  const beginStyle = TextStyle(
+                    color: QrFerryDesign.ink,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.7,
+                  );
+                  const endStyle = TextStyle(
+                    color: QrFerryDesign.ink,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.8,
+                  );
+
+                  final isPush = flightDirection == HeroFlightDirection.push;
+
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        // Ease the curve so it doesn't feel linear/robotic
+                        final t = Curves.easeInOutCubic.transform(
+                          animation.value,
+                        );
+                        final style = TextStyle.lerp(
+                          isPush ? beginStyle : endStyle,
+                          isPush ? endStyle : beginStyle,
+                          t,
+                        );
+                        return Text(
+                          'QRFerry',
+                          textScaler: TextScaler.noScaling,
+                          style: style,
+                        );
+                      },
+                    ),
+                  );
+                },
+            child: const Material(
+              type: MaterialType.transparency,
+              child: Text(
+                'QRFerry',
+                textScaler: TextScaler.noScaling,
+                style: TextStyle(
+                  color: QrFerryDesign.ink,
+                  fontSize: 17, // or 23 on the home screen
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.7, // or -0.8 on the home screen
+                ),
               ),
             ),
           ),
@@ -682,25 +740,9 @@ class _PrivacyCard extends StatelessWidget {
       shadowOffset: 7,
       padding: const EdgeInsets.all(18),
       child: const Column(
+        spacing: 5,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              PulseDot(color: QrFerryDesign.signal, size: 7),
-              SizedBox(width: 9),
-              Text(
-                'LOCAL BY TRANSPORT',
-                style: TextStyle(
-                  color: QrFerryDesign.signal,
-                  fontFamily: 'monospace',
-                  fontSize: 9,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 15),
           _FactLine(
             icon: Icons.cloud_off_outlined,
             text:
