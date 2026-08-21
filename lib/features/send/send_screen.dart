@@ -69,7 +69,7 @@ class SendScreen extends GetView<SendController> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 34),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFA7AAA9), style: BorderStyle.solid),
+                  border: Border.all(color: const Color(0xFFA7AAA9)),
                   color: QrFerryDesign.ink.withValues(alpha: 0.018),
                 ),
                 child: Column(
@@ -90,7 +90,13 @@ class SendScreen extends GetView<SendController> {
                               children: [
                                 Text('＋', style: TextStyle(fontSize: 18)),
                                 SizedBox(width: 8),
-                                Text('Browse files', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+                                Text(
+                                  'Browse files',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -99,7 +105,10 @@ class SendScreen extends GetView<SendController> {
                     const SizedBox(height: 14),
                     Text(
                       'up to ${TransferEncoder.maxFileBytes ~/ (1024 * 1024)} MB',
-                      style: const TextStyle(color: QrFerryDesign.muted, fontSize: 11),
+                      style: const TextStyle(
+                        color: QrFerryDesign.muted,
+                        fontSize: 11,
+                      ),
                     ),
                   ],
                 ),
@@ -111,9 +120,17 @@ class SendScreen extends GetView<SendController> {
                   padding: const EdgeInsets.all(12),
                   decoration: const BoxDecoration(
                     color: Color(0xFFFFF0EB),
-                    border: Border(left: BorderSide(color: QrFerryDesign.red, width: 3)),
+                    border: Border(
+                      left: BorderSide(color: QrFerryDesign.red, width: 3),
+                    ),
                   ),
-                  child: Text(controller.error.value!, style: const TextStyle(color: Color(0xFF842F21), fontSize: 12)),
+                  child: Text(
+                    controller.error.value!,
+                    style: const TextStyle(
+                      color: Color(0xFF842F21),
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -153,8 +170,16 @@ class SendScreen extends GetView<SendController> {
                 child: Stack(
                   children: [
                     BinaryQrView(data: currentFrame, padding: 12),
-                    const Positioned(top: 0, left: 0, child: _Corner(top: true, left: true)),
-                    const Positioned(bottom: 0, right: 0, child: _Corner(top: false, left: false)),
+                    const Positioned(
+                      top: 0,
+                      left: 0,
+                      child: _Corner(top: true, left: true),
+                    ),
+                    const Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: _Corner(top: false, left: false),
+                    ),
                   ],
                 ),
               ),
@@ -165,19 +190,31 @@ class SendScreen extends GetView<SendController> {
                     width: 7,
                     height: 7,
                     decoration: BoxDecoration(
-                      color: controller.playing.value ? QrFerryDesign.signal : QrFerryDesign.muted,
+                      color: controller.playing.value
+                          ? QrFerryDesign.signal
+                          : QrFerryDesign.muted,
                       shape: BoxShape.circle,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    controller.playing.value ? 'Broadcasting' : 'Ready to broadcast',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                    controller.playing.value
+                        ? 'Broadcasting'
+                        : 'Ready to broadcast',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                    ),
                   ),
                   const Spacer(),
                   Text(
                     '${controller.fps.value} FPS',
-                    style: const TextStyle(color: Color(0xFF909AA4), fontFamily: 'monospace', fontSize: 10),
+                    style: const TextStyle(
+                      color: Color(0xFF909AA4),
+                      fontFamily: 'monospace',
+                      fontSize: 10,
+                    ),
                   ),
                 ],
               ),
@@ -197,24 +234,56 @@ class SendScreen extends GetView<SendController> {
                             transfer.filename,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Text(
                           '${controller.frameIndex.value + 1} / ${transfer.chunkCount}',
-                          style: const TextStyle(color: Color(0xFF909AA4), fontFamily: 'monospace', fontSize: 9),
+                          style: const TextStyle(
+                            color: Color(0xFF909AA4),
+                            fontFamily: 'monospace',
+                            fontSize: 9,
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    ClipRect(
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        minHeight: 5,
-                        backgroundColor: const Color(0xFF303A44),
-                        valueColor: const AlwaysStoppedAnimation(QrFerryDesign.signal),
+                    LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 5,
+                      backgroundColor: const Color(0xFF303A44),
+                      valueColor: const AlwaysStoppedAnimation(
+                        QrFerryDesign.signal,
                       ),
+                    ),
+                    const SizedBox(height: 11),
+                    Row(
+                      children: [
+                        Text(
+                          'SESSION ${_sessionCode(transfer.session)}',
+                          style: const TextStyle(
+                            color: QrFerryDesign.signal,
+                            fontFamily: 'monospace',
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const Spacer(),
+                        const Text(
+                          'FQR1 · BINARY QR',
+                          style: TextStyle(
+                            color: Color(0xFF7E8993),
+                            fontFamily: 'monospace',
+                            fontSize: 8,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -224,8 +293,14 @@ class SendScreen extends GetView<SendController> {
                 width: double.infinity,
                 child: FilledButton.icon(
                   onPressed: controller.togglePlayback,
-                  icon: Icon(controller.playing.value ? Icons.pause : Icons.play_arrow),
-                  label: Text(controller.playing.value ? 'Pause stream' : 'Start QR stream'),
+                  icon: Icon(
+                    controller.playing.value ? Icons.pause : Icons.play_arrow,
+                  ),
+                  label: Text(
+                    controller.playing.value
+                        ? 'Pause stream'
+                        : 'Start QR stream',
+                  ),
                 ),
               ),
             ],
@@ -238,14 +313,16 @@ class SendScreen extends GetView<SendController> {
           subtitle: 'Lower the frame rate when the receiver struggles to lock.',
         ),
         const SizedBox(height: 16),
-        ...[5, 8, 12].map((fps) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _PresetRow(
-                fps: fps,
-                selected: controller.fps.value == fps,
-                onTap: () => controller.setFps(fps),
-              ),
-            )),
+        ...[5, 8, 12].map(
+          (fps) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _PresetRow(
+              fps: fps,
+              selected: controller.fps.value == fps,
+              onTap: () => controller.setFps(fps),
+            ),
+          ),
+        ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(13),
@@ -255,17 +332,34 @@ class SendScreen extends GetView<SendController> {
           ),
           child: Row(
             children: [
-              Container(width: 35, height: 40, color: QrFerryDesign.blue, child: const Icon(Icons.arrow_upward, color: Colors.white)),
+              Container(
+                width: 35,
+                height: 40,
+                color: QrFerryDesign.blue,
+                child: const Icon(Icons.arrow_upward, color: Colors.white),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(transfer.filename, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                    Text(
+                      transfer.filename,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12,
+                      ),
+                    ),
                     const SizedBox(height: 4),
                     Text(
                       '${Formatters.bytes(transfer.originalSize)}${transfer.compressed ? ' → ${Formatters.bytes(transfer.transmittedSize)}' : ''} · loops ${controller.loops.value}',
-                      style: const TextStyle(color: QrFerryDesign.muted, fontFamily: 'monospace', fontSize: 9),
+                      style: const TextStyle(
+                        color: QrFerryDesign.muted,
+                        fontFamily: 'monospace',
+                        fontSize: 9,
+                      ),
                     ),
                   ],
                 ),
@@ -273,13 +367,20 @@ class SendScreen extends GetView<SendController> {
             ],
           ),
         ),
+        const SizedBox(height: 22),
+        const _ProtocolStrip(),
       ],
     );
   }
 }
 
 class _PresetRow extends StatelessWidget {
-  const _PresetRow({required this.fps, required this.selected, required this.onTap});
+  const _PresetRow({
+    required this.fps,
+    required this.selected,
+    required this.onTap,
+  });
+
   final int fps;
   final bool selected;
   final VoidCallback onTap;
@@ -292,7 +393,9 @@ class _PresetRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         decoration: BoxDecoration(
           color: selected ? Colors.white : Colors.transparent,
-          border: Border.all(color: selected ? QrFerryDesign.ink : QrFerryDesign.line),
+          border: Border.all(
+            color: selected ? QrFerryDesign.ink : QrFerryDesign.line,
+          ),
         ),
         child: Row(
           children: [
@@ -301,17 +404,30 @@ class _PresetRow extends StatelessWidget {
               height: 14,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: QrFerryDesign.ink, width: selected ? 4 : 1),
+                border: Border.all(
+                  color: QrFerryDesign.ink,
+                  width: selected ? 4 : 1,
+                ),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 fps == 5 ? 'Robust' : fps == 8 ? 'Balanced' : 'Turbo',
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
-            Text('$fps FPS', style: const TextStyle(color: QrFerryDesign.muted, fontFamily: 'monospace', fontSize: 9)),
+            Text(
+              '$fps FPS',
+              style: const TextStyle(
+                color: QrFerryDesign.muted,
+                fontFamily: 'monospace',
+                fontSize: 9,
+              ),
+            ),
           ],
         ),
       ),
@@ -321,6 +437,7 @@ class _PresetRow extends StatelessWidget {
 
 class _Corner extends StatelessWidget {
   const _Corner({required this.top, required this.left});
+
   final bool top;
   final bool left;
 
@@ -336,21 +453,62 @@ class _Corner extends StatelessWidget {
 
 class _CornerPainter extends CustomPainter {
   const _CornerPainter({required this.top, required this.left});
+
   final bool top;
   final bool left;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final p = Paint()..color = QrFerryDesign.signal..strokeWidth = 2..style = PaintingStyle.stroke;
+    final paint = Paint()
+      ..color = QrFerryDesign.signal
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
     final path = Path();
     if (top && left) {
-      path.moveTo(0, size.height); path.lineTo(0, 0); path.lineTo(size.width, 0);
+      path
+        ..moveTo(0, size.height)
+        ..lineTo(0, 0)
+        ..lineTo(size.width, 0);
     } else {
-      path.moveTo(0, size.height); path.lineTo(size.width, size.height); path.lineTo(size.width, 0);
+      path
+        ..moveTo(0, size.height)
+        ..lineTo(size.width, size.height)
+        ..lineTo(size.width, 0);
     }
-    canvas.drawPath(path, p);
+    canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _ProtocolStrip extends StatelessWidget {
+  const _ProtocolStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.5),
+        border: Border.all(color: QrFerryDesign.line),
+      ),
+      child: const Text(
+        'FQR1  ·  BINARY QR  ·  CRC32  ·  LOCAL ONLY',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: QrFerryDesign.muted,
+          fontFamily: 'monospace',
+          fontSize: 8,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.65,
+        ),
+      ),
+    );
+  }
+}
+
+String _sessionCode(int sessionId) {
+  final hex = sessionId.toUnsigned(32).toRadixString(16).padLeft(8, '0').toUpperCase();
+  return '${hex.substring(0, 4)}-${hex.substring(4)}';
 }
