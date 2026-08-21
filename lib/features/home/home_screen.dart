@@ -197,50 +197,61 @@ class _Header extends StatelessWidget {
           bottom: BorderSide(color: QrFerryDesign.line, width: 1),
         ),
       ),
-      child: _Stagger.build(
-        index: 0,
-        child: Row(
-          children: [
-            Hero(
-              tag: 'QRFerry',
-              child: const Text(
+      // Keep the Hero outside MotionReveal/Transform. Hero calculates its
+      // flight rectangle from the render object's global bounds, so wrapping
+      // the whole header row in a scale/translate animation can make the
+      // wordmark jump or warp when navigation starts mid-animation.
+      child: Row(
+        children: [
+          Hero(
+            tag: 'QRFerry',
+            transitionOnUserGestures: true,
+            createRectTween: (begin, end) => MaterialRectCenterArcTween(
+              begin: begin,
+              end: end,
+            ),
+            child: const Material(
+              type: MaterialType.transparency,
+              child: Text(
                 'QRFerry',
+                textScaler: TextScaler.noScaling,
                 style: TextStyle(
+                  color: QrFerryDesign.ink,
                   fontSize: 23,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.8,
                 ),
               ),
             ),
-            const Spacer(),
-            Semantics(
-              button: true,
-              label: 'Open QRFerry project details',
-              child: Pressable(
-                onTap: () => Get.toNamed<void>(AppRoutes.details),
-                pressedScale: 0.96,
-                pressedOffset: 1,
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'DETAILS',
-                      style: TextStyle(
-                        color: QrFerryDesign.muted,
-                        fontFamily: 'monospace',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.7,
-                      ),
+          ),
+          const Spacer(),
+          Semantics(
+            button: true,
+            label: 'Open QRFerry project details',
+            child: Pressable(
+              onTap: () => Get.toNamed<void>(AppRoutes.details),
+              pressedScale: 0.96,
+              pressedOffset: 1,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'DETAILS',
+                    style: TextStyle(
+                      color: QrFerryDesign.muted,
+                      fontFamily: 'monospace',
+                      fontSize: 8,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.7,
                     ),
-                    SizedBox(width: 8),
-                    _DetailsArrow(),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: 8),
+                  _DetailsArrow(),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
