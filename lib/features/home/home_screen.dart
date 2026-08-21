@@ -7,107 +7,122 @@ import '../../widgets/qrferry_design.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  static const double _headerHeight = 76;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PaperGrid(
         child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+          child: Stack(
             children: [
-              _Header(),
-              const SizedBox(height: 58),
-              _Stagger.build(
-                index: 0,
-                child: const TechLabel('Air-gapped file transfer'),
-              ),
-              const SizedBox(height: 18),
-              _Stagger.build(
-                index: 1,
-                offsetY: 18,
-                child: const Text(
-                  'Move a file\nthrough the camera.',
-                  style: TextStyle(
-                    color: QrFerryDesign.ink,
-                    fontSize: 56,
-                    height: 0.9,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -4.0,
+              ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  24,
+                  _headerHeight + 58,
+                  24,
+                  40,
+                ),
+                children: [
+                  _Stagger.build(
+                    index: 0,
+                    child: const TechLabel('Air-gapped file transfer'),
                   ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              _Stagger.build(
-                index: 2,
-                child: const Text(
-                  'No Wi-Fi, Bluetooth, cloud, account, or pairing. Your file '
-                  'stays on your devices while animated QR frames carry the '
-                  'bytes.',
-                  style: TextStyle(
-                    color: Color(0xFF3B444C),
-                    fontSize: 16,
-                    height: 1.55,
+                  const SizedBox(height: 18),
+                  _Stagger.build(
+                    index: 1,
+                    offsetY: 18,
+                    child: const Text(
+                      'Move a file\nthrough the camera.',
+                      style: TextStyle(
+                        color: QrFerryDesign.ink,
+                        fontSize: 56,
+                        height: 0.9,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -4.0,
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 24),
+                  _Stagger.build(
+                    index: 2,
+                    child: const Text(
+                      'No Wi-Fi, Bluetooth, cloud, account, or pairing. Your file '
+                      'stays on your devices while animated QR frames carry the '
+                      'bytes.',
+                      style: TextStyle(
+                        color: Color(0xFF3B444C),
+                        fontSize: 16,
+                        height: 1.55,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  _Stagger.build(
+                    index: 3,
+                    child: const Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _TrustChip('Local only'),
+                        _TrustChip('Binary QR'),
+                        _TrustChip('CRC verified'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 42),
+                  _Stagger.build(
+                    index: 4,
+                    child: _ActionBlock(
+                      number: '01',
+                      title: 'Send a file',
+                      subtitle:
+                          'Turn any local file into a repeating optical stream.',
+                      icon: Icons.arrow_upward_rounded,
+                      dark: false,
+                      onTap: () => Get.toNamed<void>(AppRoutes.send),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  _Stagger.build(
+                    index: 5,
+                    child: _ActionBlock(
+                      number: '02',
+                      title: 'Receive a file',
+                      subtitle:
+                          'Point the camera at the sender and rebuild it locally.',
+                      icon: Icons.center_focus_strong_rounded,
+                      dark: true,
+                      onTap: () => Get.toNamed<void>(AppRoutes.receive),
+                    ),
+                  ),
+                  const SizedBox(height: 46),
+                  _Stagger.build(
+                    index: 6,
+                    child: const Divider(color: QrFerryDesign.ink, height: 1),
+                  ),
+                  const SizedBox(height: 28),
+                  _Stagger.build(
+                    index: 7,
+                    child: const TechLabel('Private by transport'),
+                  ),
+                  const SizedBox(height: 12),
+                  _Stagger.build(
+                    index: 8,
+                    child: const _MonoCaption(
+                      'The QR stream is the transport channel itself. Nothing '
+                      'needs to be uploaded to an application server.',
+                      color: QrFerryDesign.muted,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 18),
-              _Stagger.build(
-                index: 3,
-                child: const Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _TrustChip('Local only'),
-                    _TrustChip('Binary QR'),
-                    _TrustChip('CRC verified'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 42),
-              _Stagger.build(
-                index: 4,
-                child: _ActionBlock(
-                  number: '01',
-                  title: 'Send a file',
-                  subtitle:
-                      'Turn any local file into a repeating optical stream.',
-                  icon: Icons.arrow_upward_rounded,
-                  dark: false,
-                  onTap: () => Get.toNamed<void>(AppRoutes.send),
-                ),
-              ),
-              const SizedBox(height: 14),
-              _Stagger.build(
-                index: 5,
-                child: _ActionBlock(
-                  number: '02',
-                  title: 'Receive a file',
-                  subtitle:
-                      'Point the camera at the sender and rebuild it locally.',
-                  icon: Icons.center_focus_strong_rounded,
-                  dark: true,
-                  onTap: () => Get.toNamed<void>(AppRoutes.receive),
-                ),
-              ),
-              const SizedBox(height: 46),
-              _Stagger.build(
-                index: 6,
-                child: const Divider(color: QrFerryDesign.ink, height: 1),
-              ),
-              const SizedBox(height: 28),
-              _Stagger.build(
-                index: 7,
-                child: const TechLabel('Private by transport'),
-              ),
-              const SizedBox(height: 12),
-              _Stagger.build(
-                index: 8,
-                child: const _MonoCaption(
-                  'The QR stream is the transport channel itself. Nothing '
-                  'needs to be uploaded to an application server.',
-                  color: QrFerryDesign.muted,
-                  fontSize: 13,
-                ),
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: _Header(),
               ),
             ],
           ),
@@ -175,31 +190,39 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 76,
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: QrFerryDesign.line)),
+    return Container(
+      height: HomeScreen._headerHeight,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: QrFerryDesign.paper.withValues(alpha: 0.98),
+        border: const Border(
+          bottom: BorderSide(color: QrFerryDesign.ink, width: 1),
         ),
-        child: Row(
-          children: [
-            Image.asset("assets/img/logo/app_logo.png", width: 40, height: 40),
-            const SizedBox(width: 11),
-            _Stagger.build(
-              index: 0,
-              child: const Text(
-                'QRFerry',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-
-                  letterSpacing: -0.8,
-                ),
+        boxShadow: [
+          BoxShadow(
+            color: QrFerryDesign.ink.withValues(alpha: 0.12),
+            offset: const Offset(0, 4),
+            blurRadius: 0,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/img/logo/app_logo.png', width: 40, height: 40),
+          const SizedBox(width: 11),
+          _Stagger.build(
+            index: 0,
+            child: const Text(
+              'QRFerry',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.8,
               ),
             ),
-            const Spacer(),
-          ],
-        ),
+          ),
+          const Spacer(),
+        ],
       ),
     );
   }
