@@ -17,66 +17,94 @@ class HomeScreen extends StatelessWidget {
             children: [
               const _Header(),
               const SizedBox(height: 58),
-              const TechLabel('Air-gapped file transfer'),
+              const MotionReveal(
+                delay: Duration(milliseconds: 60),
+                child: TechLabel('Air-gapped file transfer'),
+              ),
               const SizedBox(height: 18),
-              const Text(
-                'Move a file\nthrough the camera.',
-                style: TextStyle(
-                  color: QrFerryDesign.ink,
-                  fontSize: 56,
-                  height: 0.9,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -4.0,
+              const MotionReveal(
+                delay: Duration(milliseconds: 110),
+                offsetY: 18,
+                child: Text(
+                  'Move a file\nthrough the camera.',
+                  style: TextStyle(
+                    color: QrFerryDesign.ink,
+                    fontSize: 56,
+                    height: 0.9,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -4.0,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                'No Wi-Fi, Bluetooth, cloud, account, or pairing. Your file stays on your devices while animated QR frames carry the bytes.',
-                style: TextStyle(
-                  color: Color(0xFF3B444C),
-                  fontSize: 16,
-                  height: 1.55,
+              const MotionReveal(
+                delay: Duration(milliseconds: 160),
+                child: Text(
+                  'No Wi-Fi, Bluetooth, cloud, account, or pairing. Your file stays on your devices while animated QR frames carry the bytes.',
+                  style: TextStyle(
+                    color: Color(0xFF3B444C),
+                    fontSize: 16,
+                    height: 1.55,
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
-              const Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _TrustChip('Local only'),
-                  _TrustChip('Binary QR'),
-                  _TrustChip('CRC verified'),
-                ],
+              const MotionReveal(
+                delay: Duration(milliseconds: 210),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _TrustChip('Local only'),
+                    _TrustChip('Binary QR'),
+                    _TrustChip('CRC verified'),
+                  ],
+                ),
               ),
               const SizedBox(height: 42),
-              _ActionBlock(
-                number: '01',
-                title: 'Send a file',
-                subtitle: 'Turn any local file into a repeating optical stream.',
-                icon: Icons.arrow_upward_rounded,
-                dark: false,
-                onTap: () => Get.toNamed<void>(AppRoutes.send),
+              MotionReveal(
+                delay: const Duration(milliseconds: 260),
+                child: _ActionBlock(
+                  number: '01',
+                  title: 'Send a file',
+                  subtitle: 'Turn any local file into a repeating optical stream.',
+                  icon: Icons.arrow_upward_rounded,
+                  dark: false,
+                  onTap: () => Get.toNamed<void>(AppRoutes.send),
+                ),
               ),
               const SizedBox(height: 14),
-              _ActionBlock(
-                number: '02',
-                title: 'Receive a file',
-                subtitle: 'Point the camera at the sender and rebuild it locally.',
-                icon: Icons.center_focus_strong_rounded,
-                dark: true,
-                onTap: () => Get.toNamed<void>(AppRoutes.receive),
+              MotionReveal(
+                delay: const Duration(milliseconds: 320),
+                child: _ActionBlock(
+                  number: '02',
+                  title: 'Receive a file',
+                  subtitle: 'Point the camera at the sender and rebuild it locally.',
+                  icon: Icons.center_focus_strong_rounded,
+                  dark: true,
+                  onTap: () => Get.toNamed<void>(AppRoutes.receive),
+                ),
               ),
               const SizedBox(height: 46),
-              const Divider(color: QrFerryDesign.ink, height: 1),
+              const MotionReveal(
+                delay: Duration(milliseconds: 380),
+                child: Divider(color: QrFerryDesign.ink, height: 1),
+              ),
               const SizedBox(height: 28),
-              const TechLabel('Private by transport'),
+              const MotionReveal(
+                delay: Duration(milliseconds: 420),
+                child: TechLabel('Private by transport'),
+              ),
               const SizedBox(height: 12),
-              const Text(
-                'The QR stream is the transport channel itself. Nothing needs to be uploaded to an application server.',
-                style: TextStyle(
-                  color: QrFerryDesign.muted,
-                  fontSize: 13,
-                  height: 1.6,
+              const MotionReveal(
+                delay: Duration(milliseconds: 450),
+                child: Text(
+                  'The QR stream is the transport channel itself. Nothing needs to be uploaded to an application server.',
+                  style: TextStyle(
+                    color: QrFerryDesign.muted,
+                    fontSize: 13,
+                    height: 1.6,
+                  ),
                 ),
               ),
             ],
@@ -102,33 +130,31 @@ class _Header extends StatelessWidget {
           children: [
             const FerryBrandMark(),
             const SizedBox(width: 11),
-            const Text(
-              'QRFerry',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.8,
+            const MotionReveal(
+              delay: Duration(milliseconds: 40),
+              child: Text(
+                'QRFerry',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.8,
+                ),
               ),
             ),
             const Spacer(),
-            Container(
-              width: 7,
-              height: 7,
-              decoration: const BoxDecoration(
-                color: Color(0xFF44A766),
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Color(0x2244A766), spreadRadius: 4)],
-              ),
-            ),
+            const PulseDot(color: Color(0xFF44A766), size: 7),
             const SizedBox(width: 8),
-            const Text(
-              'DEVICE TO DEVICE',
-              style: TextStyle(
-                color: QrFerryDesign.muted,
-                fontFamily: 'monospace',
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5,
+            const MotionReveal(
+              delay: Duration(milliseconds: 80),
+              child: Text(
+                'DEVICE TO DEVICE',
+                style: TextStyle(
+                  color: QrFerryDesign.muted,
+                  fontFamily: 'monospace',
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ],
@@ -186,8 +212,11 @@ class _ActionBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final foreground = dark ? Colors.white : QrFerryDesign.ink;
     final muted = dark ? const Color(0xFF98A0A8) : QrFerryDesign.muted;
-    return InkWell(
+
+    return Pressable(
       onTap: onTap,
+      pressedScale: 0.99,
+      pressedOffset: 3,
       child: HardShadowBox(
         color: dark ? QrFerryDesign.ink : const Color(0xFFFCFBF8),
         shadowOffset: 7,
@@ -225,11 +254,25 @@ class _ActionBlock extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Text(subtitle, style: TextStyle(color: muted, fontSize: 12, height: 1.4)),
+                  Text(
+                    subtitle,
+                    style: TextStyle(color: muted, fontSize: 12, height: 1.4),
+                  ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_rounded, color: foreground),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 520),
+              curve: QrFerryMotion.emphasized,
+              builder: (context, value, child) {
+                return Transform.translate(
+                  offset: Offset(6 * (1 - value), 0),
+                  child: Opacity(opacity: value, child: child),
+                );
+              },
+              child: Icon(Icons.arrow_forward_rounded, color: foreground),
+            ),
           ],
         ),
       ),
