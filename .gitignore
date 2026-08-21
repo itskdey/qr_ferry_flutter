@@ -12,6 +12,7 @@ coverage/
 .DS_Store
 
 android/.gradle/
+android/.gradle-wrapper/
 android/local.properties
 android/key.properties
 android/app/debug/
@@ -21,5 +22,7 @@ android/app/release/
 ios/Pods/
 ios/.symlinks/
 ios/Flutter/ephemeral/
+ios/Flutter/Flutter.podspec
 ios/Flutter/Generated.xcconfig
 ios/Flutter/flutter_export_environment.sh
+ios/**/xcuserdata/
