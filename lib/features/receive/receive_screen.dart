@@ -16,12 +16,15 @@ class ReceiveScreen extends GetView<ReceiveController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan', style: TextStyle(fontWeight: FontWeight.w900)),
+        title: const Text(
+          'Scan',
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+        ),
         actions: [
           IconButton(
             tooltip: 'Torch',
             onPressed: controller.toggleTorch,
-            icon: const Icon(Icons.flash_on_outlined),
+            icon: const Icon(Icons.flash_on_outlined, size: 15),
           ),
         ],
       ),
@@ -180,10 +183,8 @@ class _ScannerReticleState extends State<_ScannerReticle>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: _duration,
-    )..repeat(reverse: true);
+    _controller = AnimationController(vsync: this, duration: _duration)
+      ..repeat(reverse: true);
   }
 
   Duration get _duration => Duration(milliseconds: widget.active ? 850 : 1900);
@@ -209,7 +210,7 @@ class _ScannerReticleState extends State<_ScannerReticle>
       padding: const EdgeInsets.all(34),
       child: AnimatedBuilder(
         animation: _controller,
-        builder: (_, __) => CustomPaint(
+        builder: (_, _) => CustomPaint(
           painter: _ReticlePainter(
             progress: _controller.value,
             active: widget.active,
@@ -396,7 +397,10 @@ class _ReceivePanel extends StatelessWidget {
             Expanded(
               child: Text(
                 hasSession ? 'Receiving optical stream' : 'Looking for QRFerry',
-                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                ),
               ),
             ),
             Text(
@@ -538,7 +542,9 @@ class _TelemetryPanel extends StatelessWidget {
           Row(
             children: [
               Expanded(child: _Metric('SESSION', _sessionCode(sessionId))),
-              Expanded(child: _Metric('FRAMES', '$receivedCount / $chunkCount')),
+              Expanded(
+                child: _Metric('FRAMES', '$receivedCount / $chunkCount'),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -690,12 +696,7 @@ class _CompletePanel extends StatelessWidget {
                       originalSize <= 0 ? '—' : Formatters.bytes(originalSize),
                     ),
                   ),
-                  Expanded(
-                    child: _Metric(
-                      'TIME',
-                      _elapsed(elapsedSeconds),
-                    ),
-                  ),
+                  Expanded(child: _Metric('TIME', _elapsed(elapsedSeconds))),
                 ],
               ),
               const SizedBox(height: 12),
@@ -741,14 +742,7 @@ class _ReceivedFilePreview extends StatelessWidget {
   final String path;
   final String? filename;
 
-  static const _imageExtensions = {
-    'jpg',
-    'jpeg',
-    'png',
-    'gif',
-    'webp',
-    'bmp',
-  };
+  static const _imageExtensions = {'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'};
 
   static const _textExtensions = {
     'txt',
@@ -814,7 +808,7 @@ class _ReceivedFilePreview extends StatelessWidget {
                 file,
                 fit: BoxFit.contain,
                 gaplessPlayback: true,
-                errorBuilder: (_, __, ___) => const _PreviewError(
+                errorBuilder: (_, _, _) => const _PreviewError(
                   message: 'The image could not be decoded.',
                 ),
               ),
@@ -954,11 +948,7 @@ class _ReceivedFilePreview extends StatelessWidget {
       var text = utf8.decode(bytes, allowMalformed: true);
       final truncated = size > maxReadBytes || text.length > maxChars;
       if (text.length > maxChars) text = text.substring(0, maxChars);
-      return _TextPreviewData(
-        text: text,
-        fileSize: size,
-        truncated: truncated,
-      );
+      return _TextPreviewData(text: text, fileSize: size, truncated: truncated);
     } finally {
       await raf.close();
     }
@@ -1039,7 +1029,8 @@ class _ReceivedFilePreview extends StatelessWidget {
   String _labelForExtension(String extension) {
     if (extension.isEmpty) return 'FILE';
     if (extension == 'pdf') return 'PDF DOCUMENT';
-    if ({'mp4', 'mov', 'mkv', 'avi', 'webm'}.contains(extension)) return 'VIDEO';
+    if ({'mp4', 'mov', 'mkv', 'avi', 'webm'}.contains(extension))
+      return 'VIDEO';
     if ({'mp3', 'wav', 'm4a', 'aac', 'ogg', 'flac'}.contains(extension)) {
       return 'AUDIO';
     }
@@ -1049,7 +1040,11 @@ class _ReceivedFilePreview extends StatelessWidget {
 }
 
 class _PreviewMeta extends StatelessWidget {
-  const _PreviewMeta({required this.name, required this.size, required this.hint});
+  const _PreviewMeta({
+    required this.name,
+    required this.size,
+    required this.hint,
+  });
 
   final String name;
   final int? size;
@@ -1136,10 +1131,7 @@ class _PreviewError extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color(0xFFB3BBC2),
-                fontSize: 11,
-              ),
+              style: const TextStyle(color: Color(0xFFB3BBC2), fontSize: 11),
             ),
           ],
         ),
@@ -1188,7 +1180,11 @@ class _TextPreviewData {
 
 String _sessionCode(int? sessionId) {
   if (sessionId == null) return '--------';
-  final hex = sessionId.toUnsigned(32).toRadixString(16).padLeft(8, '0').toUpperCase();
+  final hex = sessionId
+      .toUnsigned(32)
+      .toRadixString(16)
+      .padLeft(8, '0')
+      .toUpperCase();
   return '${hex.substring(0, 4)}-${hex.substring(4)}';
 }
 

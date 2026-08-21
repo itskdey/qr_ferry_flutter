@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +9,7 @@ import '../../widgets/qrferry_design.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static const double _headerHeight = 76;
+  static const double _headerHeight = 50;
 
   @override
   Widget build(BuildContext context) {
@@ -118,12 +120,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: _Header(),
-              ),
+              const Positioned(top: 0, left: 0, right: 0, child: _Header()),
             ],
           ),
         ),
@@ -191,38 +188,34 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: .centerLeft,
       height: HomeScreen._headerHeight,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: QrFerryDesign.paper.withValues(alpha: 0.98),
         border: const Border(
-          bottom: BorderSide(color: QrFerryDesign.ink, width: 1),
+          bottom: BorderSide(color: QrFerryDesign.line, width: 1),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: QrFerryDesign.ink.withValues(alpha: 0.12),
-            offset: const Offset(0, 4),
-            blurRadius: 0,
-          ),
-        ],
       ),
-      child: Row(
-        children: [
-          Image.asset('assets/img/logo/app_logo.png', width: 40, height: 40),
-          const SizedBox(width: 11),
-          _Stagger.build(
-            index: 0,
-            child: const Text(
+      child: _Stagger.build(
+        index: 0,
+        child: Row(
+          children: [
+            const Text(
               'QRFerry',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 23,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.8,
               ),
             ),
-          ),
-          const Spacer(),
-        ],
+            Spacer(),
+            Transform.rotate(
+              angle: math.pi - math.pi / 4,
+              child: Icon(Icons.arrow_back),
+            ),
+          ],
+        ),
       ),
     );
   }
