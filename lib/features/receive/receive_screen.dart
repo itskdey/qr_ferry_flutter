@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../core/utils/formatters.dart';
+import '../../widgets/qrferry_design.dart';
 import 'receive_controller.dart';
 
 class ReceiveScreen extends GetView<ReceiveController> {
@@ -11,328 +12,251 @@ class ReceiveScreen extends GetView<ReceiveController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          'Receive',
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
+        title: const Text('Scan', style: TextStyle(fontWeight: FontWeight.w900)),
         actions: [
-          IconButton(
-            tooltip: 'Torch',
-            onPressed: controller.toggleTorch,
-            icon: const Icon(Icons.flash_on_rounded),
-          ),
+          IconButton(onPressed: controller.toggleTorch, icon: const Icon(Icons.flash_on_outlined)),
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(
-            () => controller.savedPath.value == null
-                ? MobileScanner(
-                    controller: controller.scannerController,
-                    onDetect: controller.onDetect,
-                  )
-                : const SizedBox.shrink(),
-          ),
-          Obx(
-            () => controller.savedPath.value == null
-                ? const IgnorePointer(child: _ScannerGuide())
-                : const SizedBox.shrink(),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SafeArea(
-              minimum: const EdgeInsets.all(16),
-              child: Obx(
-                () => _BottomPanel(
-                  hasSession: controller.hasSession.value,
-                  filename: controller.filename.value,
-                  receivedCount: controller.receivedCount.value,
-                  chunkCount: controller.chunkCount.value,
-                  progress: controller.progress.value,
-                  invalidFrames: controller.invalidFrames.value,
-                  error: controller.error.value,
-                  savedPath: controller.savedPath.value,
-                  onShare: () => _shareRecoveredFile(context),
-                  onReset: controller.reset,
+      body: PaperGrid(
+        child: SafeArea(
+          top: false,
+          child: Obx(() {
+            final complete = controller.savedPath.value != null;
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 40),
+              children: [
+                const Center(child: TechLabel('Mobile receiver')),
+                const SizedBox(height: 14),
+                Text(
+                  complete ? 'File recovered.' : 'Point. Hold. Receive.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: QrFerryDesign.ink,
+                    fontSize: 43,
+                    height: 0.92,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -3.0,
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ],
+                const SizedBox(height: 14),
+                Text(
+                  complete
+                      ? 'The recovered file passed the end-to-end transfer checks.'
+                      : 'Keep the full QR visible. Missed or duplicate frames are ignored safely.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: QrFerryDesign.muted, fontSize: 13, height: 1.5),
+                ),
+                const SizedBox(height: 28),
+                HardShadowBox(
+                  color: QrFerryDesign.ink,
+                  shadowOffset: 9,
+                  child: Column(
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 4 / 3,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            if (!complete)
+                              MobileScanner(
+                                controller: controller.scannerController,
+                                onDetect: controller.onDetect,
+                              )
+                            else
+                              Container(color: const Color(0xFF27313B)),
+                            const IgnorePointer(child: _ScannerReticle()),
+                            if (complete)
+                              Center(
+                                child: Container(
+                                  width: 92,
+                                  height: 92,
+                                  decoration: const BoxDecoration(
+                                    color: QrFerryDesign.signal,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [BoxShadow(color: Color(0x22E7FF54), spreadRadius: 12)],
+                                  ),
+                                  child: const Icon(Icons.check_rounded, size: 48, color: QrFerryDesign.ink),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(22),
+                        child: complete ? _CompletePanel(controller: controller) : _ReceivePanel(controller: controller),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }
-
-  void _shareRecoveredFile(BuildContext context) {
-    final box = context.findRenderObject() as RenderBox?;
-    final origin = box == null
-        ? null
-        : box.localToGlobal(Offset.zero) & box.size;
-
-    controller.shareRecoveredFile(origin);
-  }
 }
 
-class _ScannerGuide extends StatelessWidget {
-  const _ScannerGuide();
+class _ScannerReticle extends StatelessWidget {
+  const _ScannerReticle();
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: 0.78,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: CustomPaint(painter: _GuidePainter()),
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(34),
+      child: CustomPaint(painter: _ReticlePainter()),
     );
   }
 }
 
-class _GuidePainter extends CustomPainter {
+class _ReticlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final dimPaint = Paint()
-      ..color = Colors.black.withValues(alpha: 0.25)
-      ..style = PaintingStyle.fill;
-
-    final borderPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.82)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-
-    final rect = Offset.zero & size;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, const Radius.circular(28)),
-      dimPaint,
-    );
-
-    const corner = 42.0;
-
+    final p = Paint()..color = QrFerryDesign.signal..strokeWidth = 3..style = PaintingStyle.stroke;
+    const c = 58.0;
     final path = Path()
-      ..moveTo(0, corner)
-      ..lineTo(0, 12)
-      ..quadraticBezierTo(0, 0, 12, 0)
-      ..lineTo(corner, 0)
-      ..moveTo(size.width - corner, 0)
-      ..lineTo(size.width - 12, 0)
-      ..quadraticBezierTo(size.width, 0, size.width, 12)
-      ..lineTo(size.width, corner)
-      ..moveTo(size.width, size.height - corner)
-      ..lineTo(size.width, size.height - 12)
-      ..quadraticBezierTo(size.width, size.height, size.width - 12, size.height)
-      ..lineTo(size.width - corner, size.height)
-      ..moveTo(corner, size.height)
-      ..lineTo(12, size.height)
-      ..quadraticBezierTo(0, size.height, 0, size.height - 12)
-      ..lineTo(0, size.height - corner);
-
-    canvas.drawPath(path, borderPaint);
+      ..moveTo(0, c)..lineTo(0, 0)..lineTo(c, 0)
+      ..moveTo(size.width - c, 0)..lineTo(size.width, 0)..lineTo(size.width, c)
+      ..moveTo(size.width, size.height - c)..lineTo(size.width, size.height)..lineTo(size.width - c, size.height)
+      ..moveTo(c, size.height)..lineTo(0, size.height)..lineTo(0, size.height - c);
+    canvas.drawPath(path, p);
+    final line = Paint()..color = QrFerryDesign.signal.withValues(alpha: 0.75)..strokeWidth = 1;
+    canvas.drawLine(Offset(0, size.height / 2), Offset(size.width, size.height / 2), line);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _BottomPanel extends StatelessWidget {
-  const _BottomPanel({
-    required this.hasSession,
-    required this.filename,
-    required this.receivedCount,
-    required this.chunkCount,
-    required this.progress,
-    required this.invalidFrames,
-    required this.error,
-    required this.savedPath,
-    required this.onShare,
-    required this.onReset,
-  });
-
-  final bool hasSession;
-  final String? filename;
-  final int receivedCount;
-  final int chunkCount;
-  final double progress;
-  final int invalidFrames;
-  final String? error;
-  final String? savedPath;
-  final VoidCallback onShare;
-  final VoidCallback onReset;
+class _ReceivePanel extends StatelessWidget {
+  const _ReceivePanel({required this.controller});
+  final ReceiveController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 560),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: const Color(0xEE15171C),
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.09)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.35),
-            blurRadius: 30,
-            offset: const Offset(0, 14),
-          ),
-        ],
-      ),
-      child: savedPath != null
-          ? _buildComplete(context)
-          : _buildScanning(context),
-    );
-  }
-
-  Widget _buildScanning(BuildContext context) {
+    final progress = controller.progress.value;
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(
-                hasSession
-                    ? Icons.downloading_rounded
-                    : Icons.center_focus_strong_rounded,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              width: 7,
+              height: 7,
+              decoration: const BoxDecoration(color: QrFerryDesign.signal, shape: BoxShape.circle),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 9),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    hasSession
-                        ? filename ?? 'Receiving file'
-                        : 'Point at the sender',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    hasSession
-                        ? '$receivedCount / $chunkCount unique frames'
-                        : 'Keep the complete QR inside the guide',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.52),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+              child: Text(
+                controller.hasSession.value ? 'Receiving QR frames' : 'Looking for QRFerry',
+                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
               ),
             ),
-            Text(
-              Formatters.percent(progress),
-              style: const TextStyle(fontWeight: FontWeight.w900),
-            ),
+            Text(Formatters.percent(progress), style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
           ],
         ),
         const SizedBox(height: 14),
         LinearProgressIndicator(
           value: progress,
-          minHeight: 8,
-          borderRadius: BorderRadius.circular(999),
+          minHeight: 7,
+          backgroundColor: const Color(0xFFE6E7E4),
+          valueColor: const AlwaysStoppedAnimation(QrFerryDesign.blue),
         ),
-        if (invalidFrames > 0) ...[
-          const SizedBox(height: 9),
-          Text(
-            '$invalidFrames unreadable/non-transfer QR frame(s) ignored',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.38),
-              fontSize: 11,
+        const SizedBox(height: 18),
+        if (controller.hasSession.value)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(13),
+            decoration: BoxDecoration(color: Colors.white, border: Border.all(color: QrFerryDesign.line)),
+            child: Row(
+              children: [
+                Container(width: 35, height: 40, color: QrFerryDesign.blue, child: const Icon(Icons.arrow_downward, color: Colors.white)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        controller.filename.value ?? 'Incoming file',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${controller.receivedCount.value} / ${controller.chunkCount.value} unique frames',
+                        style: const TextStyle(color: QrFerryDesign.muted, fontFamily: 'monospace', fontSize: 9),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          )
+        else
+          const Text(
+            'Keep the complete QR inside the lime guide.',
+            style: TextStyle(color: QrFerryDesign.muted, fontSize: 12, height: 1.45),
+          ),
+        if (controller.invalidFrames.value > 0) ...[
+          const SizedBox(height: 12),
+          Text(
+            '${controller.invalidFrames.value} rejected / unreadable frame(s)',
+            style: const TextStyle(color: QrFerryDesign.muted, fontFamily: 'monospace', fontSize: 9),
           ),
         ],
-        if (error != null) ...[
-          const SizedBox(height: 10),
-          Text(
-            error!,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.error,
-              fontSize: 12,
+        if (controller.error.value != null) ...[
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: Color(0xFFFFF0EB),
+              border: Border(left: BorderSide(color: QrFerryDesign.red, width: 3)),
             ),
+            child: Text(controller.error.value!, style: const TextStyle(color: Color(0xFF842F21), fontSize: 12)),
           ),
         ],
       ],
     );
   }
+}
 
-  Widget _buildComplete(BuildContext context) {
+class _CompletePanel extends StatelessWidget {
+  const _CompletePanel({required this.controller});
+  final ReceiveController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    void share() {
+      final box = context.findRenderObject() as RenderBox?;
+      final origin = box == null ? null : box.localToGlobal(Offset.zero) & box.size;
+      controller.shareRecoveredFile(origin);
+    }
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 58,
-          height: 58,
-          decoration: BoxDecoration(
-            color: Colors.green.withValues(alpha: 0.15),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.check_rounded,
-            color: Colors.greenAccent,
-            size: 30,
-          ),
-        ),
-        const SizedBox(height: 14),
-        const Text(
-          'Transfer complete',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-        ),
+        const Text('Transfer verified', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 6),
         Text(
-          filename ?? 'File recovered',
+          controller.filename.value ?? 'File recovered',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.55)),
+          style: const TextStyle(color: QrFerryDesign.muted, fontSize: 12),
         ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: onReset,
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: const Text('Receive another'),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: FilledButton(
-                onPressed: onShare,
-                style: FilledButton.styleFrom(minimumSize: const Size(0, 50)),
-                child: const Text(
-                  'Share / Save',
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-            ),
-          ],
+        const SizedBox(height: 18),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: share,
+            icon: const Icon(Icons.download_rounded),
+            label: const Text('Share / Save file'),
+          ),
         ),
+        const SizedBox(height: 8),
+        TextButton(onPressed: controller.reset, child: const Text('Scan another transfer')),
       ],
     );
   }
