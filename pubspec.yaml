@@ -1,0 +1,26 @@
+name: qr_ferry_flutter
+description: Offline file transfer over animated QR codes. Flutter MVP inspired by QRFerry.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  mobile_scanner: ^7.4.0
+  path_provider: ^2.1.6
+  qr: ^4.0.0
+  file_picker: ^11.0.3
+  share_plus: ^11.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
