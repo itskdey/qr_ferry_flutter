@@ -9,19 +9,22 @@ void main() {
   ) async {
     Get.testMode = true;
     await tester.pumpWidget(const QrFerryApp());
+    await tester.pump(const Duration(milliseconds: 700));
 
-    expect(find.text('Move files\nthrough light.'), findsOneWidget);
+    expect(find.text('Move a file\nthrough the camera.'), findsOneWidget);
 
     await tester.tap(find.text('Send a file'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
 
-    expect(find.text('Choose a file to broadcast'), findsOneWidget);
+    expect(find.text('Choose a file'), findsOneWidget);
     expect(Get.isRegistered<SendController>(), isTrue);
 
     Get.back<void>();
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
 
-    expect(find.text('Move files\nthrough light.'), findsOneWidget);
+    expect(find.text('Move a file\nthrough the camera.'), findsOneWidget);
     expect(Get.isRegistered<SendController>(), isFalse);
   });
 }
