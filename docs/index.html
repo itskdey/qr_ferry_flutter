@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#F4F1EA" />
+  <meta name="description" content="QRFerry moves files device-to-device through animated QR codes. No Wi-Fi, Bluetooth, cloud, account, or pairing." />
+  <title>QRFerry · Move files through light</title>
+  <style>
+    :root {
+      --ink:#111820;
+      --paper:#F4F1EA;
+      --white:#FFFFFF;
+      --muted:#667079;
+      --line:#D5D2CA;
+      --signal:#E7FF54;
+      --blue:#2F6DFF;
+      --dark:#0D1923;
+      --copy:#3B444C;
+      --grid:rgba(17,24,32,.027);
+      --page:1120px;
+      --header:50px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--paper)}
+    body{
+      margin:0;
+      color:var(--ink);
+      background-color:var(--paper);
+      background-image:
+        linear-gradient(to right,var(--grid) 1px,transparent 1px),
+        linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+      background-size:28px 28px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{color:inherit}
+    img{display:block;max-width:100%}
+
+    .header{
+      position:fixed;
+      z-index:1000;
+      top:0;left:0;right:0;
+      height:var(--header);
+      background:rgba(244,241,234,.98);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+
+    .header-inner{
+      width:min(calc(100% - 40px),var(--page));
+      height:100%;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+
+    .brand{
+      color:var(--ink);
+      font-size:17px;
+      font-weight:900;
+      letter-spacing:-.7px;
+      text-decoration:none;
+    }
+
+    .nav{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+
+    .nav a{
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.7px;
+      text-decoration:none;
+      transition:color 160ms ease,transform 160ms cubic-bezier(.16,1,.3,1);
+    }
+
+    .nav a:hover{color:var(--ink);transform:translateY(-1px)}
+
+    .page{
+      width:min(calc(100% - 40px),var(--page));
+      margin:0 auto;
+      padding-top:calc(var(--header) + 56px);
+      padding-bottom:72px;
+    }
+
+    .mono{
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:1.35px;
+      text-transform:uppercase;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(360px,.86fr);
+      gap:66px;
+      align-items:center;
+      min-height:720px;
+      padding:24px 0 82px;
+    }
+
+    .hero h1{
+      max-width:680px;
+      margin:18px 0 22px;
+      font-size:clamp(62px,8vw,104px);
+      line-height:.84;
+      font-weight:900;
+      letter-spacing:-.07em;
+    }
+
+    .hero-copy{
+      max-width:650px;
+      margin:0;
+      color:var(--copy);
+      font-size:17px;
+      line-height:1.6;
+    }
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+    .chip{
+      padding:7px 10px;
+      border:1px solid var(--line);
+      border-radius:3px;
+      background:rgba(255,255,255,.55);
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:.65px;
+      text-transform:uppercase;
+    }
+
+    .actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+    .shadow-button{display:inline-block;background:var(--ink);padding:0 7px 7px 0;border:1px solid var(--ink)}
+    .button{
+      min-height:52px;
+      padding:0 20px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--ink);
+      background:var(--signal);
+      color:var(--ink);
+      font-size:12px;
+      font-weight:850;
+      text-decoration:none;
+      transition:transform 160ms cubic-bezier(.16,1,.3,1);
+    }
+    .shadow-button:hover .button{transform:translate(2px,2px)}
+    .shadow-button:active .button{transform:translate(7px,7px)}
+
+    .text-link{
+      min-height:52px;
+      display:inline-flex;
+      align-items:center;
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.7px;
+      text-decoration:none;
+    }
+
+    .hero-visual{position:relative;min-height:620px}
+    .shot{
+      position:absolute;
+      width:min(78%,380px);
+      border:1px solid var(--ink);
+      background:var(--ink);
+      padding:0 9px 9px 0;
+    }
+    .shot img{width:100%;border:1px solid var(--ink);background:#FCFBF8}
+    .shot.main{top:0;left:6%;z-index:2;transform:rotate(-1.6deg)}
+    .shot.back{right:0;bottom:0;z-index:1;transform:rotate(2deg);background:var(--signal)}
+
+    .signal-card{
+      position:absolute;
+      z-index:3;
+      right:5%;
+      top:44%;
+      width:170px;
+      padding:16px;
+      border:1px solid var(--ink);
+      background:var(--signal);
+      box-shadow:7px 7px 0 var(--ink);
+    }
+    .signal-card strong{display:block;font-size:24px;line-height:1;font-weight:900;letter-spacing:-1px}
+    .signal-card span{display:block;margin-top:8px;color:#4F5837;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:9px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+
+    .divider{height:1px;background:var(--ink);margin:0 0 58px}
+
+    .intro{
+      display:grid;
+      grid-template-columns:.72fr 1.28fr;
+      gap:70px;
+      align-items:start;
+      margin-bottom:82px;
+    }
+    .intro h2,
+    .gallery-title h2,
+    .privacy-copy h2{
+      margin:12px 0 0;
+      font-size:clamp(38px,5vw,62px);
+      line-height:.92;
+      font-weight:900;
+      letter-spacing:-.055em;
+    }
+    .intro-copy{color:var(--copy);font-size:16px;line-height:1.65;max-width:680px}
+
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:94px}
+    .step-shell{background:var(--ink);padding:0 8px 8px 0;border:1px solid var(--ink)}
+    .step-shell:nth-child(2){background:var(--blue)}
+    .step-shell:nth-child(3){background:var(--signal)}
+    .step{height:100%;min-height:210px;padding:22px;border:1px solid var(--ink);background:#FCFBF8}
+    .step-no{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:10px;font-weight:700}
+    .step h3{margin:30px 0 8px;font-size:24px;font-weight:900;letter-spacing:-.8px}
+    .step p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+
+    .gallery{margin-bottom:100px}
+    .gallery-title{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:32px}
+    .gallery-title p{max-width:430px;margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+
+    .screen-grid{display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:18px;overflow-x:auto;padding:0 9px 16px 0;scrollbar-width:thin}
+    .screen-card{min-width:190px;background:var(--ink);padding:0 7px 7px 0;border:1px solid var(--ink)}
+    .screen-card:nth-child(2),.screen-card:nth-child(5){background:var(--blue)}
+    .screen-card:nth-child(3){background:var(--signal)}
+    .screen-card img{width:100%;height:auto;border:1px solid var(--ink);background:#FCFBF8}
+    .screen-meta{padding:12px 4px 3px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:800;letter-spacing:.65px;text-transform:uppercase}
+
+    .privacy-panel{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:58px;
+      align-items:center;
+      margin-bottom:92px;
+      padding:48px;
+      color:white;
+      background:var(--dark);
+      border:1px solid var(--ink);
+      box-shadow:9px 9px 0 var(--signal);
+    }
+    .privacy-copy .mono{color:#98A0A8}
+    .privacy-copy h2{color:white}
+    .privacy-copy p{max-width:620px;color:#A3ABB2;font-size:15px;line-height:1.65}
+    .terminal{border:1px solid #46515B;background:#18212A;padding:20px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.8;color:#B6BEC5}
+    .terminal b{color:var(--signal)}
+
+    .footer-divider{height:1px;background:var(--ink);margin-top:76px}
+    .contact{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;padding:38px 0 34px}
+    .contact h2{margin:9px 0 0;font-size:clamp(34px,5vw,52px);line-height:.94;font-weight:900;letter-spacing:-.055em}
+    .contact-link{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 18px;border:1px solid var(--ink);background:var(--signal);color:var(--ink);font-size:12px;font-weight:850;text-decoration:none;box-shadow:6px 6px 0 var(--ink);transition:transform 160ms ease,box-shadow 160ms ease}
+    .contact-link:hover{transform:translate(2px,2px);box-shadow:4px 4px 0 var(--ink)}
+    .footer{padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;gap:38px;min-height:0;padding-bottom:72px}
+      .hero-visual{min-height:620px;max-width:620px;width:100%;margin:0 auto}
+      .intro{grid-template-columns:1fr;gap:22px}
+      .steps{grid-template-columns:1fr}
+      .privacy-panel{grid-template-columns:1fr;padding:32px}
+    }
+
+    @media (max-width:620px){
+      .header-inner,.page{width:calc(100% - 28px)}
+      .nav{gap:12px}.nav a:first-child{display:none}
+      .page{padding-top:calc(var(--header) + 34px)}
+      .hero{padding-top:16px}
+      .hero h1{font-size:clamp(56px,18vw,78px)}
+      .hero-visual{min-height:520px}
+      .shot{width:78%}.shot.main{left:1%}.signal-card{right:0;width:145px;padding:13px}.signal-card strong{font-size:20px}
+      .gallery-title{display:block}.gallery-title p{margin-top:14px}
+      .privacy-panel{padding:24px 20px;box-shadow:7px 7px 0 var(--signal)}
+      .contact{grid-template-columns:1fr;align-items:start}.contact-link{width:calc(100% - 6px)}
+      .footer{flex-direction:column;gap:8px}
+    }
+
+    @media (prefers-reduced-motion:no-preference){
+      .hero-copy-wrap,.hero-visual,.intro,.steps,.gallery,.privacy-panel,.contact{animation:reveal 500ms cubic-bezier(.16,1,.3,1) both}
+      .hero-visual{animation-delay:80ms}.intro{animation-delay:120ms}.steps{animation-delay:160ms}.gallery{animation-delay:200ms}.privacy-panel{animation-delay:240ms}
+      @keyframes reveal{from{opacity:0;transform:translateY(14px) scale(.992)}to{opacity:1;transform:none}}
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="#top">QRFerry</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#how">HOW IT WORKS</a>
+        <a href="privacy.html">PRIVACY</a>
+        <a href="https://github.com/itskdey/qr_ferry_flutter" target="_blank" rel="noreferrer noopener">GITHUB ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page" id="top">
+    <section class="hero">
+      <div class="hero-copy-wrap">
+        <div class="mono">Air-gapped file transfer</div>
+        <h1>Move files<br>through light.</h1>
+        <p class="hero-copy">QRFerry turns a local file into a repeating stream of animated QR frames. Point another device at the screen, rebuild the file locally, verify it, and keep going—no Wi-Fi, Bluetooth, cloud, account, backend, or pairing.</p>
+        <div class="chips" aria-label="Key properties">
+          <span class="chip">Local only</span>
+          <span class="chip">Binary QR</span>
+          <span class="chip">CRC verified</span>
+          <span class="chip">Open source</span>
+        </div>
+        <div class="actions">
+          <span class="shadow-button"><a class="button" href="https://github.com/itskdey/qr_ferry_flutter" target="_blank" rel="noreferrer noopener">VIEW SOURCE ↗</a></span>
+          <a class="text-link" href="#screens">SEE THE APP ↓</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="QRFerry application screenshots">
+        <div class="shot main"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/home_screenshot.png" alt="QRFerry home screen" /></div>
+        <div class="shot back"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/sender_qr_screenshot.png" alt="QRFerry animated QR sender screen" /></div>
+        <div class="signal-card"><strong>SCREEN → CAMERA</strong><span>The transport channel</span></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="intro" id="how">
+      <div>
+        <div class="mono">Visible-light transport</div>
+        <h2>The camera is the cable.</h2>
+      </div>
+      <p class="intro-copy">The sender never opens a socket and never uploads the file. It renders the file as binary QR frames. The receiver watches those frames through the camera, accepts chunks in any order, rejects corrupted frames, and reconstructs the original file locally.</p>
+    </section>
+
+    <section class="steps" aria-label="How QRFerry works">
+      <div class="step-shell"><div class="step"><div class="step-no">01</div><h3>Select & encode</h3><p>Choose a local file. QRFerry prepares the payload, optionally compresses it, and splits it into numbered QR chunks.</p></div></div>
+      <div class="step-shell"><div class="step"><div class="step-no">02</div><h3>Scan the stream</h3><p>The sender repeats animated QR frames while the receiving device collects unique chunks through its camera.</p></div></div>
+      <div class="step-shell"><div class="step"><div class="step-no">03</div><h3>Verify & rebuild</h3><p>QRFerry checks CRC32 integrity, reconstructs the file locally, then lets you preview, save, or share it.</p></div></div>
+    </section>
+
+    <section class="gallery" id="screens">
+      <div class="gallery-title">
+        <div><div class="mono">Transfer telemetry UI</div><h2>The real app.</h2></div>
+        <p>These screenshots are loaded directly from the current <strong>transfer-telemetry-ui</strong> branch.</p>
+      </div>
+
+      <div class="screen-grid">
+        <figure class="screen-card"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/home_screenshot.png" alt="QRFerry home screen" /><figcaption class="screen-meta">01 · Home</figcaption></figure>
+        <figure class="screen-card"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/sender_screenshot.png" alt="QRFerry sender setup screen" /><figcaption class="screen-meta">02 · Sender</figcaption></figure>
+        <figure class="screen-card"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/sender_qr_screenshot.png" alt="QRFerry QR stream screen" /><figcaption class="screen-meta">03 · QR stream</figcaption></figure>
+        <figure class="screen-card"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/receive_screenshot.png" alt="QRFerry receiver scanner screen" /><figcaption class="screen-meta">04 · Receiver</figcaption></figure>
+        <figure class="screen-card"><img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/done_screenshot.png" alt="QRFerry completed transfer screen" /><figcaption class="screen-meta">05 · Verified</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="privacy-panel">
+      <div class="privacy-copy">
+        <div class="mono">Private by transport</div>
+        <h2>No application server in the middle.</h2>
+        <p>Your file stays on the sending and receiving devices during QRFerry's transfer flow. The optical stream is the transport itself. The current protocol is intentionally simple and uses CRC32 for error detection, not encryption or cryptographic authentication.</p>
+        <div class="actions"><span class="shadow-button"><a class="button" href="privacy.html">READ PRIVACY POLICY →</a></span></div>
+      </div>
+      <div class="terminal" aria-label="QRFerry transfer properties">
+        <div><b>transport</b>  visible light / QR</div>
+        <div><b>account</b>    none</div>
+        <div><b>backend</b>    none required</div>
+        <div><b>network</b>    not required</div>
+        <div><b>integrity</b>  frame + payload CRC32</div>
+        <div><b>storage</b>    local device</div>
+        <div><b>protocol</b>   FQR1</div>
+      </div>
+    </section>
+
+    <div class="footer-divider"></div>
+    <section class="contact">
+      <div><div class="mono">Open source / Flutter</div><h2>See how the light moves bytes.</h2></div>
+      <a class="contact-link" href="https://github.com/itskdey/qr_ferry_flutter" target="_blank" rel="noreferrer noopener">OPEN GITHUB ↗</a>
+    </section>
+
+    <footer class="footer">
+      <span>QRFerry · Device-to-device optical transfer</span>
+      <span><a href="privacy.html" style="text-decoration:none">Privacy</a> · Open source</span>
+    </footer>
+  </main>
+</body>
+</html>
