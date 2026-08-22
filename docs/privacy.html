@@ -4,42 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#F4F1EA" />
-
-  <meta
-    http-equiv="Cache-Control"
-    content="no-cache, no-store, must-revalidate"
-  />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-
-  <meta
-    name="description"
-    content="Privacy Policy for QRFerry, an offline device-to-device file transfer app using animated QR codes."
-  />
-
+  <meta name="description" content="Privacy Policy for QRFerry, an offline device-to-device file transfer app using animated QR codes." />
   <title>QRFerry · Privacy Policy</title>
 
   <style>
     :root {
       --ink: #111820;
-      --paper: #f4f1ea;
-      --white: #ffffff;
+      --paper: #F4F1EA;
+      --white: #FFFFFF;
       --muted: #667079;
-      --line: #d5d2ca;
-      --signal: #e7ff54;
-      --signal-soft: #f3ffae;
-      --blue: #2f6dff;
-      --dark: #0d1923;
-      --copy: #3b444c;
+      --line: #D5D2CA;
+      --signal: #E7FF54;
+      --blue: #2F6DFF;
+      --dark: #0D1923;
+      --copy: #3B444C;
       --grid: rgba(17, 24, 32, 0.027);
-
       --header-height: 54px;
       --page: 940px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html {
       scroll-behavior: smooth;
@@ -48,69 +35,29 @@
 
     body {
       margin: 0;
-
       color: var(--ink);
       background-color: var(--paper);
-
       background-image:
-        linear-gradient(
-          to right,
-          var(--grid) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          to bottom,
-          var(--grid) 1px,
-          transparent 1px
-        );
-
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
       background-size: 28px 28px;
-
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
-
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
-    button,
-    a {
-      font: inherit;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    /* ================================================================
-       HEADER
-       Based on transfer-telemetry-ui / DetailsScreen
-
-       ←  PRIVACY                                      QRFerry
-       ================================================================ */
+    button, a { font: inherit; }
+    a { color: inherit; }
 
     .details-header {
       position: fixed;
-
       z-index: 1000;
-
       top: 0;
       left: 0;
       right: 0;
-
       height: var(--header-height);
-
       background: rgba(244, 241, 234, 0.985);
-
       border-bottom: 1px solid var(--line);
-
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
@@ -118,9 +65,7 @@
     .details-header__inner {
       width: min(calc(100% - 32px), var(--page));
       height: 100%;
-
       margin: 0 auto;
-
       display: flex;
       align-items: center;
     }
@@ -128,139 +73,73 @@
     .back-button {
       width: 36px;
       height: 36px;
-
       border: 0;
       padding: 0;
-
       display: grid;
       place-items: center;
-
       background: transparent;
       color: var(--ink);
-
       cursor: pointer;
-
-      transition:
-        transform 160ms cubic-bezier(.16, 1, .3, 1),
-        background 160ms ease;
+      transition: transform 160ms cubic-bezier(.16, 1, .3, 1), background 160ms ease;
     }
 
-    .back-button:hover {
-      background: rgba(17, 24, 32, 0.045);
-    }
-
-    .back-button:active {
-      transform: translateY(1px) scale(.96);
-    }
-
-    .back-button svg {
-      width: 21px;
-      height: 21px;
-      display: block;
-    }
+    .back-button:hover { background: rgba(17, 24, 32, .045); }
+    .back-button:active { transform: translateY(1px) scale(.96); }
+    .back-button svg { width: 21px; height: 21px; display: block; }
 
     .header-section {
       margin-left: 6px;
-
       color: var(--muted);
-
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        "Liberation Mono",
-        monospace;
-
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       font-size: 10px;
       line-height: 1;
       font-weight: 800;
-
       letter-spacing: 1.2px;
     }
 
     .header-brand {
       margin-left: auto;
-
       color: var(--ink);
-
       font-size: 17px;
       line-height: 1;
       font-weight: 900;
-
       letter-spacing: -0.7px;
-
       text-decoration: none;
+      transition: opacity 160ms ease;
     }
 
-    .header-brand:hover {
-      opacity: 0.72;
-    }
-
-    /* ================================================================
-       PAGE
-       ================================================================ */
+    .header-brand:hover { opacity: .7; }
 
     .page {
       width: min(calc(100% - 40px), var(--page));
-
       margin: 0 auto;
-
-      padding:
-        calc(var(--header-height) + 42px)
-        0
-        72px;
+      padding: calc(var(--header-height) + 42px) 0 72px;
     }
 
     .mono {
       color: var(--muted);
-
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        "Liberation Mono",
-        monospace;
-
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       font-size: 10px;
       font-weight: 700;
-
       letter-spacing: 1.35px;
-
       text-transform: uppercase;
     }
 
-    /* ================================================================
-       HERO
-       ================================================================ */
-
-    .hero {
-      padding: 24px 0 50px;
-    }
+    .hero { padding: 24px 0 50px; }
 
     .hero h1 {
       max-width: 760px;
-
       margin: 15px 0 20px;
-
       font-size: clamp(54px, 9.2vw, 92px);
-
-      line-height: 0.88;
+      line-height: .88;
       font-weight: 900;
-
-      letter-spacing: -0.065em;
+      letter-spacing: -.065em;
     }
 
     .hero p {
       max-width: 720px;
-
       margin: 0;
-
       color: var(--copy);
-
       font-size: 16px;
       line-height: 1.62;
     }
@@ -268,1250 +147,398 @@
     .tags {
       display: flex;
       flex-wrap: wrap;
-
       gap: 8px;
-
       margin-top: 22px;
     }
 
     .tag {
       padding: 7px 10px;
-
       border: 1px solid var(--line);
       border-radius: 3px;
-
-      background: rgba(255, 255, 255, 0.55);
-
+      background: rgba(255,255,255,.55);
       color: var(--muted);
-
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 9px;
       font-weight: 700;
-
-      letter-spacing: 0.65px;
-
+      letter-spacing: .65px;
       text-transform: uppercase;
     }
 
-    /* ================================================================
-       METADATA
-       ================================================================ */
-
     .meta-row {
       display: grid;
-
       grid-template-columns: repeat(3, 1fr);
-
       gap: 12px;
-
       margin-bottom: 48px;
     }
 
     .meta {
       border-top: 1px solid var(--ink);
-
       padding-top: 11px;
     }
 
     .meta b {
       display: block;
-
       margin-top: 6px;
-
       font-size: 13px;
     }
 
-    /* ================================================================
-       SECTIONS
-       ================================================================ */
-
-    .section {
-      margin-bottom: 38px;
-    }
+    .section { margin-bottom: 38px; }
 
     .section-title {
       display: grid;
-
       grid-template-columns: 30px 1fr;
-
       gap: 18px;
-
       margin-bottom: 14px;
-
       align-items: start;
     }
 
     .section-no {
       padding-top: 4px;
-
       color: var(--muted);
-
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 11px;
       font-weight: 700;
     }
 
     .section-title h2 {
       margin: 0;
-
       font-size: clamp(25px, 4vw, 34px);
-
       line-height: 1;
       font-weight: 900;
-
-      letter-spacing: -0.04em;
+      letter-spacing: -.04em;
     }
 
     .section-title p {
       margin: 6px 0 0;
-
       color: var(--muted);
-
       font-size: 12px;
       line-height: 1.45;
     }
 
-    /* ================================================================
-       HARD SHADOW CARDS
-       ================================================================ */
-
     .shadow-box {
       margin-right: 8px;
-
       padding: 0 8px 8px 0;
-
       border: 1px solid var(--ink);
-
       background: var(--ink);
     }
 
-    .shadow-box.signal-shadow {
-      background: var(--signal);
-    }
+    .shadow-box.signal-shadow { background: var(--signal); }
 
     .card {
       border: 1px solid var(--ink);
-
-      background: #fcfbf8;
-
+      background: #FCFBF8;
       padding: 24px;
     }
 
     .card.dark {
       color: var(--white);
-
       background: var(--dark);
     }
 
     .card p,
     .card li {
       color: var(--copy);
-
       font-size: 14px;
       line-height: 1.72;
     }
 
     .card.dark p,
-    .card.dark li {
-      color: #a3abb2;
-    }
-
-    .card p:first-child {
-      margin-top: 0;
-    }
-
-    .card p:last-child {
-      margin-bottom: 0;
-    }
-
-    .card strong {
-      color: var(--ink);
-
-      font-weight: 850;
-    }
-
-    .card.dark strong {
-      color: var(--white);
-    }
-
-    /* ================================================================
-       DATA GRID
-       ================================================================ */
+    .card.dark li { color: #A3ABB2; }
+    .card p:first-child { margin-top: 0; }
+    .card p:last-child { margin-bottom: 0; }
+    .card strong { color: var(--ink); font-weight: 850; }
+    .card.dark strong { color: var(--white); }
 
     .data-grid {
       display: grid;
-
       grid-template-columns: repeat(2, 1fr);
-
       gap: 1px;
-
       margin-top: 20px;
-
       border: 1px solid var(--line);
-
       background: var(--line);
     }
 
     .data-item {
       min-height: 118px;
-
       padding: 17px;
-
-      background: rgba(255, 255, 255, 0.62);
+      background: rgba(255,255,255,.62);
     }
 
-    .data-item .mono {
-      font-size: 9px;
-    }
-
-    .data-item h3 {
-      margin: 8px 0 6px;
-
-      font-size: 16px;
-
-      letter-spacing: -0.02em;
-    }
-
-    .data-item p {
-      margin: 0;
-
-      color: var(--muted);
-
-      font-size: 12px;
-      line-height: 1.55;
-    }
-
-    /* ================================================================
-       SECURITY WARNING
-       ================================================================ */
+    .data-item .mono { font-size: 9px; }
+    .data-item h3 { margin: 8px 0 6px; font-size: 16px; letter-spacing: -.02em; }
+    .data-item p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
 
     .warning {
       display: grid;
-
       grid-template-columns: 48px 1fr;
-
       gap: 16px;
-
       margin-top: 20px;
-
       padding: 17px;
-
       color: var(--ink);
-
       background: var(--signal);
     }
 
     .warning-mark {
       width: 48px;
       height: 48px;
-
       display: grid;
       place-items: center;
-
       background: var(--ink);
       color: var(--signal);
-
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 15px;
       font-weight: 900;
     }
 
     .warning p {
       margin: 0;
-
       color: var(--ink) !important;
-
       font-size: 13px;
       line-height: 1.55;
     }
 
-    /* ================================================================
-       OLD CONTACT / FOOTER
-       ================================================================ */
-
+    /* Restored old footer */
     .footer-divider {
       height: 1px;
-
       margin: 74px 0 0;
-
       background: var(--ink);
     }
 
     .contact {
       min-height: 174px;
-
       display: grid;
-
       grid-template-columns: minmax(0, 1fr) auto;
-
       gap: 32px;
-
       align-items: center;
-
       padding: 38px 0 34px;
     }
 
-    .contact-copy {
-      min-width: 0;
-    }
+    .contact-copy { min-width: 0; }
 
     .contact h2 {
       margin: 10px 0 0;
-
       color: var(--ink);
-
       font-size: clamp(34px, 5vw, 52px);
-
-      line-height: 0.94;
+      line-height: .94;
       font-weight: 900;
-
-      letter-spacing: -0.055em;
+      letter-spacing: -.055em;
     }
 
+    /* Hard 3D offset exactly like the reference */
     .contact-link-wrap {
-      padding-right: 7px;
-      padding-bottom: 7px;
-
-      background: var(--ink);
-
+      display: inline-block;
+      padding: 0 10px 10px 0;
       border: 1px solid var(--ink);
+      background: var(--ink);
     }
 
     .contact-link {
-      min-height: 54px;
-
-      padding: 0 20px;
-
+      min-height: 74px;
+      padding: 0 34px;
       display: inline-flex;
-
       align-items: center;
       justify-content: center;
-
-      border: 1px solid var(--ink);
-
+      border: 2px solid var(--ink);
       background: var(--signal);
       color: var(--ink);
-
       font-size: 12px;
-      font-weight: 850;
-
+      font-weight: 900;
+      letter-spacing: .02em;
       white-space: nowrap;
-
       text-decoration: none;
-
+      transform: translate(0, 0);
       transition:
-        transform 160ms cubic-bezier(.16, 1, .3, 1);
+        transform 160ms cubic-bezier(.16, 1, .3, 1),
+        background 160ms ease;
     }
 
-    .contact-link:hover {
-      transform: translate(2px, 2px);
-    }
-
-    .contact-link:active {
-      transform: translate(5px, 5px) scale(.99);
-    }
+    .contact-link:hover { transform: translate(3px, 3px); }
+    .contact-link:active { transform: translate(10px, 10px); }
 
     .site-footer {
       min-height: 56px;
-
       display: flex;
-
       align-items: center;
       justify-content: space-between;
-
       gap: 20px;
-
       border-top: 1px solid var(--line);
-
       color: var(--muted);
-
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 9px;
       font-weight: 700;
-
-      letter-spacing: 0.65px;
-
+      letter-spacing: .65px;
       text-transform: uppercase;
     }
-
-    /* ================================================================
-       MOBILE
-       ================================================================ */
 
     @media (max-width: 700px) {
       .page {
         width: min(calc(100% - 32px), var(--page));
-
-        padding-top:
-          calc(var(--header-height) + 30px);
+        padding-top: calc(var(--header-height) + 30px);
       }
 
-      .details-header__inner {
-        width: calc(100% - 20px);
-      }
-
-      .hero {
-        padding-top: 18px;
-      }
-
-      .hero h1 {
-        font-size: clamp(52px, 17vw, 74px);
-      }
-
+      .details-header__inner { width: calc(100% - 20px); }
+      .hero { padding-top: 18px; }
+      .hero h1 { font-size: clamp(52px, 17vw, 74px); }
       .meta-row,
-      .data-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section-title {
-        grid-template-columns: 25px 1fr;
-
-        gap: 12px;
-      }
-
-      .card {
-        padding: 20px 18px;
-      }
-
-      .warning {
-        grid-template-columns: 42px 1fr;
-
-        gap: 13px;
-      }
-
-      .warning-mark {
-        width: 42px;
-        height: 42px;
-      }
-
-      .footer-divider {
-        margin-top: 58px;
-      }
+      .data-grid { grid-template-columns: 1fr; }
+      .section-title { grid-template-columns: 25px 1fr; gap: 12px; }
+      .card { padding: 20px 18px; }
+      .warning { grid-template-columns: 42px 1fr; gap: 13px; }
+      .warning-mark { width: 42px; height: 42px; }
+      .footer-divider { margin-top: 58px; }
 
       .contact {
         min-height: 0;
-
         grid-template-columns: 1fr;
-
         gap: 28px;
-
         align-items: start;
-
         padding: 34px 0 38px;
       }
 
-      .contact h2 {
-        max-width: 520px;
-      }
-
       .contact-link-wrap {
-        width: calc(100% - 7px);
+        width: calc(100% - 10px);
+        max-width: 520px;
       }
 
       .contact-link {
         width: 100%;
-
-        min-height: 56px;
+        min-height: 64px;
+        padding: 0 22px;
+        white-space: normal;
+        text-align: center;
       }
 
       .site-footer {
         min-height: 0;
-
         padding: 19px 0;
-
         flex-direction: column;
-
         align-items: flex-start;
-
         gap: 7px;
       }
     }
-
-    /* ================================================================
-       MOTION
-       ================================================================ */
 
     @media (prefers-reduced-motion: no-preference) {
       .hero,
       .meta-row,
       .section,
       .contact {
-        animation:
-          reveal 440ms
-          cubic-bezier(.16, 1, .3, 1)
-          both;
+        animation: reveal 440ms cubic-bezier(.16,1,.3,1) both;
       }
 
-      .meta-row {
-        animation-delay: 50ms;
-      }
-
-      .section:nth-of-type(2) {
-        animation-delay: 80ms;
-      }
-
-      .section:nth-of-type(3) {
-        animation-delay: 120ms;
-      }
-
-      .section:nth-of-type(4) {
-        animation-delay: 160ms;
-      }
-
-      .contact {
-        animation-delay: 200ms;
-      }
+      .meta-row { animation-delay: 50ms; }
+      .section:nth-of-type(2) { animation-delay: 80ms; }
+      .section:nth-of-type(3) { animation-delay: 120ms; }
+      .section:nth-of-type(4) { animation-delay: 160ms; }
+      .contact { animation-delay: 200ms; }
 
       @keyframes reveal {
-        from {
-          opacity: 0;
-
-          transform:
-            translateY(12px)
-            scale(.992);
-        }
-
-        to {
-          opacity: 1;
-
-          transform:
-            translateY(0)
-            scale(1);
-        }
+        from { opacity: 0; transform: translateY(12px) scale(.992); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
       }
     }
   </style>
 </head>
-
 <body>
-
-  <!-- ==============================================================
-       HEADER
-       ============================================================== -->
-
   <header class="details-header">
     <div class="details-header__inner">
-
-      <button
-        class="back-button"
-        type="button"
-        aria-label="Go back"
-        onclick="goBack()"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M19 12H5M11 18L5 12L11 6"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+      <button class="back-button" type="button" aria-label="Go back" onclick="goBack()">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 12H5M11 18L5 12L11 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-
-      <span class="header-section">
-        PRIVACY
-      </span>
-
-      <a
-        class="header-brand"
-        href="https://github.com/itskdey/qr_ferry_flutter"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        QRFerry
-      </a>
-
+      <span class="header-section">PRIVACY</span>
+      <a class="header-brand" href="https://github.com/itskdey/qr_ferry_flutter" target="_blank" rel="noreferrer noopener">QRFerry</a>
     </div>
   </header>
 
-  <!-- ==============================================================
-       MAIN
-       ============================================================== -->
-
   <main class="page">
-
-    <!-- HERO -->
-
     <section class="hero">
-
-      <div class="mono">
-        Private by transport
-      </div>
-
-      <h1>
-        Privacy,<br />
-        without the cloud.
-      </h1>
-
-      <p>
-        QRFerry transfers files by displaying animated QR frames
-        on one device and decoding them with the camera on another.
-        The transfer does not require a QRFerry account,
-        application server, cloud upload, Wi-Fi, Bluetooth,
-        or mobile data.
-      </p>
-
+      <div class="mono">Private by transport</div>
+      <h1>Privacy,<br>without the cloud.</h1>
+      <p>QRFerry transfers files by displaying animated QR frames on one device and decoding them with the camera on another. The transfer does not require a QRFerry account, application server, cloud upload, Wi-Fi, Bluetooth, or mobile data.</p>
       <div class="tags">
-
-        <span class="tag">
-          Local only
-        </span>
-
-        <span class="tag">
-          No account
-        </span>
-
-        <span class="tag">
-          No analytics
-        </span>
-
-        <span class="tag">
-          No ads
-        </span>
-
+        <span class="tag">Local only</span>
+        <span class="tag">No account</span>
+        <span class="tag">No analytics</span>
+        <span class="tag">No ads</span>
       </div>
-
     </section>
 
-    <!-- POLICY META -->
-
-    <section
-      class="meta-row"
-      aria-label="Policy metadata"
-    >
-
-      <div class="meta">
-
-        <div class="mono">
-          Document
-        </div>
-
-        <b>
-          Privacy Policy
-        </b>
-
-      </div>
-
-      <div class="meta">
-
-        <div class="mono">
-          Effective
-        </div>
-
-        <b>
-          22 August 2026
-        </b>
-
-      </div>
-
-      <div class="meta">
-
-        <div class="mono">
-          Application
-        </div>
-
-        <b>
-          QRFerry · v1
-        </b>
-
-      </div>
-
+    <section class="meta-row" aria-label="Policy metadata">
+      <div class="meta"><div class="mono">Document</div><b>Privacy Policy</b></div>
+      <div class="meta"><div class="mono">Effective</div><b>22 August 2026</b></div>
+      <div class="meta"><div class="mono">Application</div><b>QRFerry · v1</b></div>
     </section>
-
-    <!-- ============================================================
-         01
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          01
-        </span>
-
-        <div>
-
-          <h2>
-            What QRFerry collects
-          </h2>
-
-          <p>
-            No account profile, analytics stream,
-            advertising identifier, or QRFerry backend.
-          </p>
-
+      <div class="section-title"><span class="section-no">01</span><div><h2>What QRFerry collects</h2><p>No account profile, analytics stream, advertising identifier, or QRFerry backend.</p></div></div>
+      <div class="shadow-box"><div class="card">
+        <p>QRFerry itself does <strong>not collect, sell, rent, or transmit personal information to an application backend</strong>. The current app does not include a sign-in system, advertising SDK, analytics SDK, remote database, or QRFerry-operated server.</p>
+        <div class="data-grid">
+          <div class="data-item"><div class="mono">Personal profile</div><h3>Not collected</h3><p>No name, email address, phone number, account, or user profile is required.</p></div>
+          <div class="data-item"><div class="mono">Analytics / ads</div><h3>Not collected</h3><p>The current release does not include advertising or analytics SDKs.</p></div>
+          <div class="data-item"><div class="mono">Location</div><h3>Not requested</h3><p>QRFerry does not request device location permission for transfers.</p></div>
+          <div class="data-item"><div class="mono">Network transport</div><h3>Not required</h3><p>File bytes move through visible QR frames rather than a QRFerry network connection.</p></div>
         </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            QRFerry itself does
-            <strong>
-              not collect, sell, rent, or transmit personal
-              information to an application backend
-            </strong>.
-            The current app does not include a sign-in system,
-            advertising SDK, analytics SDK, remote database,
-            or QRFerry-operated server.
-          </p>
-
-          <div class="data-grid">
-
-            <div class="data-item">
-
-              <div class="mono">
-                Personal profile
-              </div>
-
-              <h3>
-                Not collected
-              </h3>
-
-              <p>
-                No name, email address, phone number,
-                account, or user profile is required.
-              </p>
-
-            </div>
-
-            <div class="data-item">
-
-              <div class="mono">
-                Analytics / ads
-              </div>
-
-              <h3>
-                Not collected
-              </h3>
-
-              <p>
-                The current release does not include
-                advertising or analytics SDKs.
-              </p>
-
-            </div>
-
-            <div class="data-item">
-
-              <div class="mono">
-                Location
-              </div>
-
-              <h3>
-                Not requested
-              </h3>
-
-              <p>
-                QRFerry does not request device location
-                permission for transfers.
-              </p>
-
-            </div>
-
-            <div class="data-item">
-
-              <div class="mono">
-                Network transport
-              </div>
-
-              <h3>
-                Not required
-              </h3>
-
-              <p>
-                File bytes move through visible QR frames
-                rather than a QRFerry network connection.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
+      </div></div>
     </section>
-
-    <!-- ============================================================
-         02
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          02
-        </span>
-
-        <div>
-
-          <h2>
-            Camera access
-          </h2>
-
-          <p>
-            Used only to scan incoming QR frames
-            on the receiving device.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            QRFerry requests camera permission when you receive
-            a file. The camera is used to scan the animated QR
-            stream shown on the sending device. Camera frames
-            are processed on-device for QR decoding.
-          </p>
-
-          <p>
-            QRFerry does not require camera access for sending
-            and does not intentionally upload camera images
-            or video to a QRFerry server. If you revoke camera
-            permission, receiving files by QR code will not work.
-          </p>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">02</span><div><h2>Camera access</h2><p>Used only to scan incoming QR frames on the receiving device.</p></div></div>
+      <div class="shadow-box"><div class="card"><p>QRFerry requests camera permission when you receive a file. The camera is used to scan the animated QR stream shown on the sending device. Camera frames are processed on-device for QR decoding.</p><p>QRFerry does not require camera access for sending and does not intentionally upload camera images or video to a QRFerry server. If you revoke camera permission, receiving files by QR code will not work.</p></div></div>
     </section>
-
-    <!-- ============================================================
-         03
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          03
-        </span>
-
-        <div>
-
-          <h2>
-            Files and transfer data
-          </h2>
-
-          <p>
-            The selected file remains between the sending
-            and receiving devices.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            When sending, QRFerry reads the file you choose
-            through the system file picker, may compress it
-            locally, splits it into chunks, and renders those
-            bytes as repeating QR frames.
-          </p>
-
-          <p>
-            Frames can contain technical metadata required
-            to rebuild the transfer, including the
-            <strong>
-              filename, file size, chunk information,
-              transfer session identifier, compression state,
-              and CRC32 integrity values
-            </strong>.
-          </p>
-
-          <p>
-            After reception, the reconstructed file can be
-            stored locally so you can preview, save, or share it.
-            The file stays under your device's control until
-            you delete or export it.
-          </p>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">03</span><div><h2>Files and transfer data</h2><p>The selected file remains between the sending and receiving devices.</p></div></div>
+      <div class="shadow-box"><div class="card"><p>When sending, QRFerry reads the file you choose through the system file picker, may compress it locally, splits it into chunks, and renders those bytes as repeating QR frames.</p><p>Frames can contain technical metadata required to rebuild the transfer, including the <strong>filename, file size, chunk information, transfer session identifier, compression state, and CRC32 integrity values</strong>.</p><p>After reception, the reconstructed file can be stored locally so you can preview, save, or share it. The file stays under your device's control until you delete or export it.</p></div></div>
     </section>
-
-    <!-- ============================================================
-         04
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          04
-        </span>
-
-        <div>
-
-          <h2>
-            Optical privacy is not encryption
-          </h2>
-
-          <p>
-            Keep the QR stream visible only to the device
-            you intend to receive it.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box signal-shadow">
-
-        <div class="card dark">
-
-          <p>
-            QRFerry avoids cloud transport, but the current
-            transfer protocol is
-            <strong>
-              not end-to-end encrypted
-            </strong>.
-            QR frames are visible on the sender's display.
-            A nearby person or camera with a clear view of
-            the complete stream may be able to capture enough
-            frames to reconstruct the transferred content.
-          </p>
-
-          <p>
-            CRC32 is used for transfer error detection.
-            It is not cryptographic authentication,
-            encryption, or tamper protection.
-          </p>
-
-          <div class="warning">
-
-            <div class="warning-mark">
-              QR
-            </div>
-
-            <p>
-              For private transfers, keep the sending screen
-              out of view of other people and cameras, keep
-              the devices close together, and avoid broadcasting
-              sensitive QR streams in public areas.
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">04</span><div><h2>Optical privacy is not encryption</h2><p>Keep the QR stream visible only to the device you intend to receive it.</p></div></div>
+      <div class="shadow-box signal-shadow"><div class="card dark"><p>QRFerry avoids cloud transport, but the current transfer protocol is <strong>not end-to-end encrypted</strong>. QR frames are visible on the sender's display. A nearby person or camera with a clear view of the complete stream may be able to capture enough frames to reconstruct the transferred content.</p><p>CRC32 is used for transfer error detection. It is not cryptographic authentication, encryption, or tamper protection.</p><div class="warning"><div class="warning-mark">QR</div><p>For private transfers, keep the sending screen out of view of other people and cameras, keep the devices close together, and avoid broadcasting sensitive QR streams in public areas.</p></div></div></div>
     </section>
-
-    <!-- ============================================================
-         05
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          05
-        </span>
-
-        <div>
-
-          <h2>
-            Sharing and third parties
-          </h2>
-
-          <p>
-            External apps receive a file only when you
-            explicitly choose to share or save it.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            QRFerry can open the operating system's native
-            share/save interface. If you choose another app,
-            cloud provider, messaging service, storage location,
-            or person, that destination may receive the file
-            under its own privacy practices.
-          </p>
-
-          <p>
-            QRFerry does not control how third-party apps
-            or services handle content after you explicitly
-            export it.
-          </p>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">05</span><div><h2>Sharing and third parties</h2><p>External apps receive a file only when you explicitly choose to share or save it.</p></div></div>
+      <div class="shadow-box"><div class="card"><p>QRFerry can open the operating system's native share/save interface. If you choose another app, cloud provider, messaging service, storage location, or person, that destination may receive the file under its own privacy practices.</p><p>QRFerry does not control how third-party apps or services handle content after you explicitly export it.</p></div></div>
     </section>
-
-    <!-- ============================================================
-         06
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          06
-        </span>
-
-        <div>
-
-          <h2>
-            Retention and deletion
-          </h2>
-
-          <p>
-            No remote QRFerry account or server-side
-            transfer history exists in the current release.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            QRFerry does not maintain a remote user profile
-            or cloud transfer record. Files reconstructed
-            on your device remain local until you remove them,
-            uninstall the app, or manage them through your
-            device's storage controls.
-          </p>
-
-          <p>
-            Content you export elsewhere may remain at that
-            destination according to the destination's own
-            retention rules.
-          </p>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">06</span><div><h2>Retention and deletion</h2><p>No remote QRFerry account or server-side transfer history exists in the current release.</p></div></div>
+      <div class="shadow-box"><div class="card"><p>QRFerry does not maintain a remote user profile or cloud transfer record. Files reconstructed on your device remain local until you remove them, uninstall the app, or manage them through your device's storage controls.</p><p>Content you export elsewhere may remain at that destination according to the destination's own retention rules.</p></div></div>
     </section>
-
-    <!-- ============================================================
-         07
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          07
-        </span>
-
-        <div>
-
-          <h2>
-            Children's privacy
-          </h2>
-
-          <p>
-            No child-specific account, advertising profile,
-            or behavioral tracking.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            QRFerry does not knowingly collect personal
-            information from children through an account,
-            analytics system, advertising system, or
-            QRFerry-operated backend. Its local file-transfer
-            functionality works the same way regardless of age.
-          </p>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">07</span><div><h2>Children's privacy</h2><p>No child-specific account, advertising profile, or behavioral tracking.</p></div></div>
+      <div class="shadow-box"><div class="card"><p>QRFerry does not knowingly collect personal information from children through an account, analytics system, advertising system, or QRFerry-operated backend. Its local file-transfer functionality works the same way regardless of age.</p></div></div>
     </section>
-
-    <!-- ============================================================
-         08
-         ============================================================ -->
 
     <section class="section">
-
-      <div class="section-title">
-
-        <span class="section-no">
-          08
-        </span>
-
-        <div>
-
-          <h2>
-            Policy changes
-          </h2>
-
-          <p>
-            This page will change if QRFerry's
-            data behavior changes.
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="shadow-box">
-
-        <div class="card">
-
-          <p>
-            This Privacy Policy may be updated when QRFerry
-            adds or changes features, permissions, storage
-            behavior, or third-party services. Material changes
-            will be reflected by an updated effective date
-            on this page.
-          </p>
-
-          <p>
-            If a future release introduces online services,
-            accounts, analytics, advertising, or other data
-            collection, this policy should be updated before
-            that release is distributed.
-          </p>
-
-        </div>
-
-      </div>
-
+      <div class="section-title"><span class="section-no">08</span><div><h2>Policy changes</h2><p>This page will change if QRFerry's data behavior changes.</p></div></div>
+      <div class="shadow-box"><div class="card"><p>This Privacy Policy may be updated when QRFerry adds or changes features, permissions, storage behavior, or third-party services. Material changes will be reflected by an updated effective date on this page.</p><p>If a future release introduces online services, accounts, analytics, advertising, or other data collection, this policy should be updated before that release is distributed.</p></div></div>
     </section>
-
-    <!-- ============================================================
-         OLD FOOTER RESTORED
-         ============================================================ -->
 
     <div class="footer-divider"></div>
 
     <section class="contact">
-
-      <div class="contact-copy">
-
-        <div class="mono">
-          Questions / Privacy request
-        </div>
-
-        <h2>
-          Talk to the developer.
-        </h2>
-
-      </div>
-
-      <div class="contact-link-wrap">
-
-        <a
-          class="contact-link"
-          href="https://github.com/itskdey/qr_ferry_flutter/issues"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          OPEN GITHUB ISSUES ↗
-        </a>
-
-      </div>
-
+      <div class="contact-copy"><div class="mono">Questions / Privacy request</div><h2>Talk to the developer.</h2></div>
+      <div class="contact-link-wrap"><a class="contact-link" href="https://github.com/itskdey/qr_ferry_flutter/issues" target="_blank" rel="noreferrer noopener">OPEN GITHUB ISSUES ↗</a></div>
     </section>
 
     <footer class="site-footer">
-
-      <span>
-        QRFERRY · DEVICE-TO-DEVICE OPTICAL TRANSFER
-      </span>
-
-      <span>
-        PRIVACY POLICY · 22 AUG 2026
-      </span>
-
+      <span>QRFERRY · DEVICE-TO-DEVICE OPTICAL TRANSFER</span>
+      <span>PRIVACY POLICY · 22 AUG 2026</span>
     </footer>
-
   </main>
 
   <script>
     function goBack() {
       if (window.history.length > 1) {
         window.history.back();
-        return;
+      } else {
+        window.location.href = 'https://github.com/itskdey/qr_ferry_flutter';
       }
-
-      window.location.href =
-        "https://github.com/itskdey/qr_ferry_flutter";
     }
   </script>
-
 </body>
 </html>
