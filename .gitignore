@@ -10,6 +10,8 @@ coverage/
 .vscode/
 *.iml
 .DS_Store
+android/app/upload-keystore.jks
+android/key.properties
 
 android/.gradle/
 android/.gradle-wrapper/
