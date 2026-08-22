@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../features/details/details_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/receive/receive_binding.dart';
 import '../features/receive/receive_screen.dart';
@@ -23,6 +24,12 @@ abstract final class AppPages {
       name: AppRoutes.receive,
       page: ReceiveScreen.new,
       binding: ReceiveBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: _transitionDuration,
+    ),
+    GetPage<void>(
+      name: AppRoutes.details,
+      page: DetailsScreen.new,
       transition: Transition.fadeIn,
       transitionDuration: _transitionDuration,
     ),

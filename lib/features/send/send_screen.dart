@@ -18,16 +18,20 @@ class SendScreen extends GetView<SendController> {
         appBar: AppBar(
           title: const Text(
             'Send',
-            style: TextStyle(fontWeight: FontWeight.w900),
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
           ),
           actions: [
             if (transfer != null)
               MotionReveal(
                 child: TextButton(
                   onPressed: controller.pickFile,
-                  child: const Text('CHANGE FILE'),
+                  child: const Text(
+                    'CHANGE FILE',
+                    style: TextStyle(color: QrFerryDesign.ink, fontSize: 12),
+                  ),
                 ),
               ),
+            const SizedBox(width: 15),
           ],
         ),
         body: PaperGrid(
@@ -132,7 +136,10 @@ class SendScreen extends GetView<SendController> {
                                     child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text('＋', style: TextStyle(fontSize: 18)),
+                                        Text(
+                                          '＋',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
                                         SizedBox(width: 8),
                                         Text(
                                           'Browse files',
@@ -261,9 +268,7 @@ class SendScreen extends GetView<SendController> {
               Row(
                 children: [
                   PulseDot(
-                    color: playing
-                        ? QrFerryDesign.signal
-                        : QrFerryDesign.muted,
+                    color: playing ? QrFerryDesign.signal : QrFerryDesign.muted,
                     active: playing,
                     size: 7,
                   ),
@@ -540,7 +545,11 @@ class _PresetRow extends StatelessWidget {
                   fontWeight: selected ? FontWeight.w900 : FontWeight.w800,
                 ),
                 child: Text(
-                  fps == 5 ? 'Robust' : fps == 8 ? 'Balanced' : 'Turbo',
+                  fps == 5
+                      ? 'Robust'
+                      : fps == 8
+                      ? 'Balanced'
+                      : 'Turbo',
                 ),
               ),
             ),
@@ -572,7 +581,9 @@ class _Corner extends StatelessWidget {
     return SizedBox(
       width: 26,
       height: 26,
-      child: CustomPaint(painter: _CornerPainter(top: top, left: left)),
+      child: CustomPaint(
+        painter: _CornerPainter(top: top, left: left),
+      ),
     );
   }
 }

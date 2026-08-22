@@ -11,6 +11,7 @@ coverage/
 *.iml
 .DS_Store
 android/app/upload-keystore.jks
+android/key.properties
 
 android/.gradle/
 android/.gradle-wrapper/
@@ -19,6 +20,7 @@ android/key.properties
 android/app/debug/
 android/app/profile/
 android/app/release/
+release-symbols
 
 ios/Pods/
 ios/.symlinks/

@@ -67,7 +67,8 @@ class _MotionRevealState extends State<MotionReveal>
     if (_started) return;
     _started = true;
 
-    final reduceMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reduceMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     if (reduceMotion) {
       _controller.value = 1;
       return;
@@ -213,7 +214,8 @@ class _PulseDotState extends State<PulseDot>
   }
 
   void _syncAnimation() {
-    final reduceMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reduceMotion =
+        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
     if (widget.active && !reduceMotion) {
       if (!_controller.isAnimating) _controller.repeat(reverse: true);
     } else {
@@ -372,51 +374,6 @@ class _PaperGridPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class FerryBrandMark extends StatelessWidget {
-  const FerryBrandMark({super.key, this.size = 25});
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final gap = size * 0.12;
-    return MotionReveal(
-      duration: const Duration(milliseconds: 520),
-      offsetY: 4,
-      scaleFrom: 0.88,
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            for (final cell in const [Offset(0, 0), Offset(1, 0), Offset(0, 1)])
-              Positioned(
-                left: cell.dx * (size / 2 + gap / 2),
-                top: cell.dy * (size / 2 + gap / 2),
-                child: Container(
-                  width: (size - gap) / 2,
-                  height: (size - gap) / 2,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: QrFerryDesign.ink, width: 3),
-                  ),
-                ),
-              ),
-            Positioned(
-              right: -2,
-              bottom: 2,
-              child: Container(
-                width: (size - gap) / 2,
-                height: (size - gap) / 2,
-                color: QrFerryDesign.signal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class TechLabel extends StatelessWidget {
   const TechLabel(this.text, {super.key, this.color = QrFerryDesign.muted});
   final String text;
@@ -449,6 +406,7 @@ class HardShadowBox extends StatelessWidget {
     this.padding = EdgeInsets.zero,
     this.shadowOffset = 8,
     this.borderColor = QrFerryDesign.ink,
+    this.shadowColor = QrFerryDesign.ink,
   });
 
   final Widget child;
@@ -456,14 +414,15 @@ class HardShadowBox extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double shadowOffset;
   final Color borderColor;
+  final Color shadowColor;
 
   @override
   Widget build(BuildContext context) {
     return MotionReveal(
       child: Container(
         decoration: BoxDecoration(
-          color: QrFerryDesign.ink,
-          border: Border.all(color: QrFerryDesign.ink),
+          color: shadowColor,
+          border: Border.all(color: shadowColor),
         ),
         padding: EdgeInsets.only(right: shadowOffset, bottom: shadowOffset),
         child: AnimatedSize(
