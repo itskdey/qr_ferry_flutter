@@ -1,196 +1,194 @@
-# QR Ferry
+<p align="center">
+  <img src="assets/img/logo/app_logo.png" alt="QRFerry logo" width="108" />
+</p>
 
-**Offline device-to-device file transfer through animated QR codes, built with Flutter.**
+<h1 align="center">QRFerry</h1>
 
-QR Ferry turns a file into a repeating stream of binary QR frames on one device and reconstructs it with the camera on another. The entire transfer happens locally: no Wi-Fi, mobile data, Bluetooth, cloud storage, account, backend, or pairing step is required.
+<p align="center">
+  <strong>Offline device-to-device file transfer through animated QR codes.</strong>
+</p>
+
+<p align="center">
+  Move a file from one device to another using only a screen and a camera — no Wi-Fi, Bluetooth, cloud storage, account, backend, or pairing step required.
+</p>
+
+<p align="center">
+  <img alt="Flutter" src="https://img.shields.io/badge/Flutter-Mobile-2F6DFF?style=flat-square&logo=flutter&logoColor=white" />
+  <img alt="Dart" src="https://img.shields.io/badge/Dart-%3E%3D3.11-111820?style=flat-square&logo=dart&logoColor=white" />
+  <img alt="Platforms" src="https://img.shields.io/badge/Platforms-Android%20%7C%20iOS-E7FF54?style=flat-square&labelColor=111820&color=E7FF54" />
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-E7FF54?style=flat-square&labelColor=111820&color=E7FF54" />
+</p>
+
+<p align="center">
+  <a href="docs/index.html"><strong>Landing page</strong></a>
+  ·
+  <a href="docs/privacy.html"><strong>Privacy policy</strong></a>
+  ·
+  <a href="https://github.com/itskdey/qr_ferry_flutter/issues"><strong>Issues</strong></a>
+  ·
+  <a href="LICENSE"><strong>License</strong></a>
+</p>
+
+---
+
+## Overview
+
+QRFerry experiments with a deliberately simple transport model: **visible light**.
+
+The sending device reads a local file, optionally compresses it, breaks it into numbered binary chunks, and renders those chunks as a repeating stream of QR frames. The receiving device watches that stream through its camera, collects valid frames in any order, reconstructs the original bytes, verifies integrity, and saves the recovered file locally.
 
 The sender's **display** and the receiver's **camera** are the transport channel.
 
 > [!NOTE]
-> QR Ferry is currently an MVP focused on a small, readable, pure-Dart transfer protocol. It is designed for experiments, learning, demos, and relatively small files. It is not yet a replacement for a high-speed network transfer protocol.
+> QRFerry is currently an MVP intended for experiments, learning, demos, air-gapped workflows, and relatively small files. It is not designed to replace a high-speed network transfer protocol.
 
-## Preview
+## App preview
 
 <p align="center">
-  <img src="assets/screenshot/sender_qr.png" alt="QR Ferry sender broadcasting an animated QR stream" width="47%" />
-  &nbsp;&nbsp;
-  <img src="assets/screenshot/recieve_scanner.PNG" alt="QR Ferry receiver scanning the sender" width="47%" />
+  <img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/home_screenshot.png" alt="QRFerry home screen" width="290" />
 </p>
 
-| Sender | Receiver |
-| --- | --- |
-| Select a file, choose the playback speed, and broadcast its binary chunks as a repeating QR stream. | Point the camera at the sender, collect unique frames in any order, verify the transfer, preview the recovered file, then save or share it. |
+<table>
+  <tr>
+    <td align="center"><strong>Prepare</strong></td>
+    <td align="center"><strong>Broadcast</strong></td>
+    <td align="center"><strong>Receive</strong></td>
+    <td align="center"><strong>Verified</strong></td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/sender_screenshot.png" alt="QRFerry sender setup" width="210" />
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/sender_qr_screenshot.png" alt="QRFerry QR broadcast" width="210" />
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/receive_screenshot.png" alt="QRFerry receiver scanner" width="210" />
+    </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/itskdey/qr_ferry_flutter/transfer-telemetry-ui/assets/screenshot/done_screenshot.png" alt="QRFerry completed transfer" width="210" />
+    </td>
+  </tr>
+</table>
 
-The current interface follows an optical-tool / editorial visual language: warm paper grid backgrounds, near-black panels, neon signal-lime highlights, hard offset shadows, technical monospace labels, and large high-contrast typography.
+The interface uses an optical-tool / editorial visual language: warm paper-grid surfaces, near-black technical panels, signal-lime highlights, hard offset shadows, monospace metadata, and high-contrast typography.
 
-## Why QR Ferry?
+## Why QRFerry?
 
-Most file-transfer apps depend on a network, pairing, discovery, a server, or a shared account. QR Ferry explores a different transport model: **visible light**.
+Most file-transfer tools rely on at least one shared dependency: a local network, internet connection, discovery service, account, pairing workflow, cable, or backend.
 
-A sender does not open a socket or upload a file. It renders bytes as QR codes. A receiver does not connect to the sender. It observes those QR codes through the camera and rebuilds the original file locally.
+QRFerry explores a different constraint: **what if the file itself could cross the gap through the camera?**
 
-That makes the project useful for experimenting with:
+That makes the project useful for exploring:
 
-- air-gapped or network-restricted transfer concepts
-- QR byte-mode capacity and rendering
+- air-gapped and network-restricted transfer concepts
+- binary QR byte-mode transport
 - continuous camera decoding
-- binary packet design
-- out-of-order chunk collection
-- integrity checking
+- packet framing and integrity validation
+- out-of-order chunk reconstruction
+- duplicate-frame handling
 - local-first Flutter architecture
 - optical-channel UX and performance
 
-## Features
+## Highlights
 
-### Sender
-
-- Pick any locally accessible file with the system file picker
-- Maximum input size of **20 MB** in the current MVP
-- Calculate an original-file CRC32 before transmission
-- Try gzip compression off the UI isolate
-- Keep the compressed result only when it saves at least **5% and 32 bytes**
-- Split transmitted bytes into **512-byte payload chunks** by default
-- Serialize compact binary frames with metadata and per-frame CRC32
-- Encode frame bytes directly using QR **byte mode** instead of Base64
-- Broadcast the frames in a repeating animation
-- Select **5 FPS**, **8 FPS**, or **12 FPS**
-- Show current frame number, total frame count, loop count, compression status, and file size
-
-### Receiver
-
-- Continuously scan QR codes with the rear camera
-- Use raw decoded QR bytes rather than converting the payload to text
-- Accept frames in any order
-- Ignore duplicate frames safely
-- Lock onto one transfer session at a time
-- Reject invalid/corrupted transfer frames
-- Display live unique-frame progress
-- Reassemble all chunks by index
-- Verify the transmitted payload before decompression
-- Automatically decompress gzip transfers
-- Verify the final file size and original CRC32
-- Save recovered files under `QR_Ferry_Received`
-- Avoid overwriting existing files by adding names such as `file (1).ext`
-- Export through the native share/save sheet
-
-### Received-file preview
-
-A completed transfer can be inspected before exporting it.
-
-| File type | Current preview behavior |
+| Area | What QRFerry does |
 | --- | --- |
-| JPG, JPEG, PNG, GIF, WebP, BMP | Inline image preview; tap to open a fullscreen zoomable viewer |
-| TXT, Markdown, JSON, CSV, XML, YAML, logs | Scrollable selectable text preview |
-| Dart, JS/TS, HTML/CSS, Python, Java, Kotlin, Swift, C/C++, Rust, Go, SQL, shell files | Monospace source preview |
-| PDF | File metadata/type card |
-| Video | File metadata/type card |
-| Audio | File metadata/type card |
-| ZIP/RAR/7z/TAR/GZ | Archive metadata/type card |
-| Other binary files | Generic filename, type, and size card |
+| **Transport** | Sends raw binary data through animated QR frames instead of a socket or cloud upload |
+| **Local-first** | No QRFerry account, application backend, API key, or cloud storage is required |
+| **Sender** | Picks a local file, optionally gzip-compresses it, chunks it, and broadcasts a repeating QR stream |
+| **Receiver** | Continuously decodes QR bytes, accepts chunks in any order, ignores duplicates, reconstructs and verifies the file |
+| **Integrity** | Uses per-frame CRC32, transmitted-payload CRC32, and final-file CRC32/size checks |
+| **Playback** | Supports 5 FPS, 8 FPS, and 12 FPS broadcast presets |
+| **Preview** | Lets the receiver inspect supported text, code, and image files before export |
+| **Export** | Uses the native system share/save sheet after a verified transfer |
+| **UI** | Provides live transfer state, progress, frame position, loop count, file metadata, and protocol-oriented details |
 
-Text previews are intentionally bounded so a large received document does not try to render the entire file at once.
-
-## Transfer flow
+## How it works
 
 ```text
-┌──────────────────── SENDER ────────────────────┐
-│                                                │
-│  Select local file                             │
-│       │                                        │
-│       ▼                                        │
-│  Read original bytes                          │
-│       │                                        │
-│       ├──► Original CRC32                      │
-│       │                                        │
-│       ▼                                        │
-│  Try gzip compression                          │
-│       │                                        │
-│       ▼                                        │
-│  Split into numbered chunks                    │
-│       │                                        │
-│       ▼                                        │
-│  Add metadata + frame CRC32                    │
-│       │                                        │
-│       ▼                                        │
-│  Render raw binary QR frame                    │
-│       │                                        │
-│       └──── repeat at 5 / 8 / 12 FPS ─────┐   │
-└─────────────────────────────────────────────│───┘
-                                              │ light
-                                              ▼
-┌─────────────────── RECEIVER ───────────────────┐
-│                                                │
-│  Camera decodes QR bytes                       │
-│       │                                        │
-│       ▼                                        │
-│  Parse + validate frame CRC32                  │
-│       │                                        │
-│       ▼                                        │
-│  Deduplicate and store by chunk index          │
-│       │                                        │
-│       ▼                                        │
-│  Wait until every chunk has arrived            │
-│       │                                        │
-│       ▼                                        │
-│  Verify transmitted CRC32                      │
-│       │                                        │
-│       ▼                                        │
-│  Decompress when required                      │
-│       │                                        │
-│       ▼                                        │
-│  Verify original size + CRC32                  │
-│       │                                        │
-│       ▼                                        │
-│  Save → Preview → Share                        │
-└────────────────────────────────────────────────┘
+SENDER                                              RECEIVER
+
+Local file                                           Camera
+   │                                                   │
+   ▼                                                   ▼
+Read bytes                                      Decode QR bytes
+   │                                                   │
+   ├── CRC32                                           ├── Validate frame
+   │                                                   │
+   ▼                                                   ▼
+Try gzip compression                            Deduplicate chunks
+   │                                                   │
+   ▼                                                   ▼
+Split into numbered chunks                       Reassemble by index
+   │                                                   │
+   ▼                                                   ▼
+Add metadata + CRC32                             Verify transmitted CRC32
+   │                                                   │
+   ▼                                                   ▼
+Render binary QR frame   ───── visible light ─────► Decompress if needed
+                                                       │
+                                                       ▼
+                                                Verify original file
+                                                       │
+                                                       ▼
+                                                Preview / Save / Share
 ```
 
-Each transfer receives a 32-bit session identifier. Metadata is repeated in every frame, so the receiver can begin watching after playback has already started. The receiver stores only unique chunks; if a frame is missed, the sender eventually displays it again on the next loop.
+Each transfer has a 32-bit session identifier. Transfer metadata is repeated in every frame, so the receiver can begin scanning after the sender has already started broadcasting. Missed frames are recovered when the sender loops through the sequence again.
 
-## UI walkthrough
+## Transfer characteristics
 
-### 1. Send a file
+| Property | Current implementation |
+| --- | --- |
+| Maximum source file | **20 MB** |
+| Default payload chunk | **512 bytes** |
+| Supported internal chunk range | **128–1,200 bytes** |
+| Broadcast presets | **5 / 8 / 12 FPS** |
+| Compression | gzip, kept only when it saves at least 5% and 32 bytes |
+| QR payload | Raw QR byte mode, not Base64 |
+| Session identifier | 32-bit |
+| Integrity | CRC32 at frame, transmitted-payload, and original-file levels |
 
-The sender starts with an **air-gapped file transfer** view. After choosing a file, QR Ferry prepares the payload and moves into the broadcast screen.
+### Approximate payload ceiling
 
-<p align="center">
-  <img src="assets/screenshot/sender_qr.png" alt="Sender QR stream" width="430" />
-</p>
+Ignoring QR headers, metadata, camera losses, and decoding overhead, a 512-byte payload gives these theoretical rates:
 
-The dark QR stage is the optical output. Below it you can see whether broadcasting is active, the selected FPS, the current frame position, and stream progress.
+| Playback | Raw payload per second |
+| ---: | ---: |
+| 5 FPS | 2,560 B/s |
+| 8 FPS | 4,096 B/s |
+| 12 FPS | 6,144 B/s |
 
-Playback presets are intentionally simple:
+Real transfer speed is lower and depends strongly on camera focus, screen brightness, viewing angle, reflections, device performance, file compressibility, and selected FPS.
 
-| Mode | Rate | Recommended use |
-| --- | ---: | --- |
-| Robust | 5 FPS | Older cameras, difficult lighting, larger distance |
-| Balanced | 8 FPS | Recommended starting point |
-| Turbo | 12 FPS | Good focus, bright screen, capable receiver |
+## Received-file preview
 
-If reception stalls, reducing FPS usually gives the camera more time to obtain a clean exposure and decode each symbol.
+After a successful transfer, QRFerry can inspect supported content before the user exports it.
 
-### 2. Receive a file
+| File type | Preview behavior |
+| --- | --- |
+| JPG, JPEG, PNG, GIF, WebP, BMP | Inline image preview with fullscreen viewing |
+| TXT, Markdown, JSON, CSV, XML, YAML, logs | Scrollable selectable text |
+| Dart, JS/TS, HTML/CSS, Python, Java, Kotlin, Swift, C/C++, Rust, Go, SQL, shell | Monospace source preview |
+| PDF | File metadata / type card |
+| Video | File metadata / type card |
+| Audio | File metadata / type card |
+| ZIP, RAR, 7z, TAR, GZ | Archive metadata / type card |
+| Other binary files | Generic filename, type, and size card |
 
-The receiver uses the rear camera and places a lime optical guide over the preview.
-
-<p align="center">
-  <img src="assets/screenshot/recieve_scanner.PNG" alt="Receiver scanner" width="430" />
-</p>
-
-As soon as a valid `FQR1` frame is detected, the screen begins showing the incoming filename and the number of unique frames collected. Duplicate frames are harmless and do not advance progress.
-
-At 100%, scanning stops while QR Ferry validates and writes the reconstructed file. A successful transfer changes to the verified state and shows the received-file preview.
+Large text documents are intentionally previewed with bounded content rather than rendering the entire file at once.
 
 ## Getting started
 
 ### Requirements
 
-- Flutter / Dart **3.11 or later**
+- Flutter with Dart **3.11 or later**
 - Android Studio + Android SDK for Android development
 - macOS + Xcode + CocoaPods for iOS development
-- A physical camera device for real receiver testing
+- A physical device with a camera for realistic receiver testing
 
-The included native targets currently support:
+Current native targets:
 
 - **Android:** minimum SDK 24 / Android 7.0+
 - **iOS:** 13.0+
@@ -204,161 +202,139 @@ flutter pub get
 flutter run
 ```
 
-To check available devices:
+No API keys, cloud credentials, backend configuration, or environment secrets are required.
+
+### Run on a specific device
 
 ```bash
-flutter doctor
 flutter devices
-```
-
-Run on a specific target:
-
-```bash
 flutter run -d <device-id>
 ```
 
-No API keys, environment variables, cloud credentials, or backend configuration are required.
+## Usage
 
-## How to use
+### Send
 
-### Sending
-
-1. Launch QR Ferry on device A.
+1. Open QRFerry on the sending device.
 2. Choose **Send a file**.
-3. Tap **Browse files**.
-4. Select the file you want to transfer.
-5. Start with **Balanced / 8 FPS**.
-6. Tap **Start QR stream**.
-7. Keep the sender display awake and visible until the receiver reaches 100%.
+3. Select a local file.
+4. Start with **Balanced / 8 FPS**.
+5. Start the QR stream.
+6. Keep the sender screen visible until the receiving device reaches 100%.
 
-### Receiving
+### Receive
 
-1. Launch QR Ferry on device B.
+1. Open QRFerry on the receiving device.
 2. Choose **Receive a file**.
-3. Grant camera permission if requested.
-4. Point the rear camera at the complete QR code on device A.
-5. Keep the full white QR square inside the lime guide.
-6. Hold the devices steady while the unique-frame count increases.
-7. When verification completes, inspect the preview.
-8. Tap **Share / Save file** to export it, or **Scan another transfer** to reset the receiver.
+3. Grant camera permission when requested.
+4. Point the camera at the complete QR code on the sender.
+5. Keep both devices steady while unique frames are collected.
+6. Wait for final verification.
+7. Preview the recovered file, then save or share it.
+
+> [!TIP]
+> If decoding stalls, reduce the sender to **5 FPS**, increase screen brightness, keep the full QR margin visible, and keep both devices square to each other.
 
 ## Protocol v1
 
-QR Ferry currently uses a simple numbered-chunk protocol rather than fountain coding. Multi-byte integers are unsigned and encoded in little-endian order.
+QRFerry currently uses a compact numbered-chunk protocol identified by the magic value `FQR1`.
 
-| Offset | Size | Field | Description |
-| ---: | ---: | --- | --- |
-| 0 | 4 | Magic | ASCII `FQR1` |
-| 4 | 1 | Version | Protocol version, currently `1` |
-| 5 | 1 | Flags | Bit 0 = gzip compressed |
-| 6 | 4 | Session | 32-bit transfer identifier |
-| 10 | 4 | Chunk index | Zero-based position of this payload |
-| 14 | 4 | Chunk count | Number of chunks in the transfer |
-| 18 | 4 | Original size | File size before optional compression |
-| 22 | 4 | Transmitted size | Actual number of bytes carried by the stream |
-| 26 | 4 | Original CRC32 | CRC32 of the original file |
-| 30 | 4 | Transmitted CRC32 | CRC32 before optional decompression |
-| 34 | 1 | Filename length | UTF-8 filename length, max 80 bytes |
-| 35 | 2 | Payload length | Number of payload bytes in this frame |
-| 37 | N | Filename | UTF-8 filename |
-| 37 + N | M | Payload | Binary chunk bytes |
-| 37 + N + M | 4 | Frame CRC32 | CRC32 of all preceding frame bytes |
+Every frame carries enough metadata for the receiver to identify and validate the transfer, including:
 
-Default payload size is **512 bytes**. The encoder supports custom chunk sizes from **128 to 1,200 bytes** internally.
+- protocol version and flags
+- transfer session ID
+- chunk index and total chunk count
+- original and transmitted file sizes
+- original and transmitted CRC32 values
+- UTF-8 filename
+- binary payload
+- per-frame CRC32
+
+Multi-byte integer values are encoded in little-endian order.
 
 ### Integrity model
 
-There are three separate integrity checks:
+QRFerry performs three separate integrity checks:
 
 1. **Frame CRC32** — rejects an individually corrupted QR frame.
-2. **Transmitted CRC32** — validates the fully joined stream before decompression.
-3. **Original size + CRC32** — validates the final reconstructed file.
+2. **Transmitted CRC32** — validates the reconstructed transmitted payload before decompression.
+3. **Original size + CRC32** — validates the final recovered file.
 
-CRC32 is an error-detection mechanism, **not** authentication or cryptographic tamper protection.
+> [!IMPORTANT]
+> CRC32 is an error-detection mechanism. It is **not encryption, authentication, or cryptographic tamper protection**.
 
-## Performance
+## Architecture
 
-Ignoring frame headers and camera losses, a 512-byte payload gives these theoretical payload rates:
-
-| Playback | Payload per second |
-| ---: | ---: |
-| 5 FPS | 2,560 B/s |
-| 8 FPS | 4,096 B/s |
-| 12 FPS | 6,144 B/s |
-
-Real throughput is lower because QR frames contain metadata and cameras do not necessarily decode every displayed frame.
-
-Performance depends heavily on:
-
-- screen brightness
-- QR size on the sender display
-- camera focus
-- viewing angle
-- reflections and motion blur
-- device camera frame rate
-- QR decode performance
-- selected playback FPS
-- file compressibility
-
-Because the current protocol uses numbered chunks, a missed chunk is recovered when the sender loops back to it. This is simple and reliable for an MVP but less efficient than RaptorQ/fountain coding under heavy frame loss.
-
-## Project structure
+The protocol layer is intentionally separated from the UI so the transport implementation can evolve without requiring a complete interface rewrite.
 
 ```text
-assets/
-└── screenshot/
-    ├── sender_qr.png                  # Sender UI screenshot used by this README
-    └── recieve_scanner.PNG            # Receiver UI screenshot used by this README
-
 lib/
-├── main.dart                          # Flutter bootstrap + portrait orientation
-├── app.dart                           # GetMaterialApp and QRFerry theme
+├── main.dart
+├── app.dart
 ├── routes/
-│   ├── app_routes.dart                # /, /send, /receive
-│   └── app_pages.dart                 # GetX routes and bindings
+│   ├── app_pages.dart
+│   └── app_routes.dart
 ├── core/
 │   ├── protocol/
-│   │   ├── crc32.dart                 # CRC32 implementation
-│   │   ├── transfer_encoder.dart      # File read, gzip, chunk preparation
-│   │   ├── transfer_frame.dart        # FQR1 serialization and parsing
-│   │   └── transfer_receiver.dart     # Deduplication and reconstruction
+│   │   ├── crc32.dart
+│   │   ├── transfer_encoder.dart
+│   │   ├── transfer_frame.dart
+│   │   └── transfer_receiver.dart
 │   └── utils/
-│       └── formatters.dart            # Byte / percentage formatting
 ├── features/
 │   ├── home/
-│   │   └── home_screen.dart           # Device-to-device landing screen
 │   ├── send/
-│   │   ├── send_binding.dart
-│   │   ├── send_controller.dart       # Playback timer and file preparation
-│   │   └── send_screen.dart           # Broadcast UI
-│   └── receive/
-│       ├── receive_binding.dart
-│       ├── receive_controller.dart    # Camera, collection, saving, sharing
-│       └── receive_screen.dart        # Scanner + received-file preview
+│   ├── receive/
+│   └── details/
 └── widgets/
-    ├── binary_qr_view.dart            # Pixel-aligned raw binary QR renderer
-    ├── ferry_card.dart                # Legacy/shared card helper
-    └── qrferry_design.dart            # Paper grid, palette and design primitives
-
-test/
-├── protocol_test.dart                 # CRC/frame/reconstruction tests
-└── getx_navigation_test.dart          # GetX route lifecycle test
+    ├── binary_qr_view.dart
+    └── qrferry_design.dart
 ```
 
-The protocol layer is intentionally separated from the interface. A future RaptorQ or Rust implementation can replace the chunk codec without requiring a complete UI rewrite.
+### Main dependencies
 
-## Main dependencies
-
-| Package | Role |
+| Package | Purpose |
 | --- | --- |
-| `get` | Reactive state, dependency injection, navigation |
+| `get` | Navigation, dependency injection, reactive state |
 | `file_picker` | Native file selection |
 | `qr` | Binary QR matrix generation |
-| `mobile_scanner` | Camera QR decoding and raw decoded bytes |
-| `path_provider` | Application documents location |
+| `mobile_scanner` | Camera scanning and raw decoded QR bytes |
+| `path_provider` | Application storage paths |
 | `share_plus` | Native share/save sheet |
+| `google_fonts` | Typography support |
 
-Compression, binary serialization, CRC32, isolates, file reads, and received-file previews are implemented with Dart/Flutter APIs and project code.
+Compression, CRC32, binary serialization, isolates, transfer reconstruction, and preview logic are implemented in Dart/Flutter and project code.
+
+## Privacy & security
+
+QRFerry does not use a file-upload backend. File content is read, encoded, decoded, reconstructed, previewed, and saved locally.
+
+However, **offline does not mean secret**:
+
+- the visible QR stream is currently unencrypted
+- someone able to record enough QR frames may be able to reconstruct the file
+- CRC32 protects against accidental corruption, not malicious modification
+- there is currently no sender identity verification or receiver authentication
+
+Do not display sensitive transfers where untrusted people or cameras can observe the sender screen.
+
+See the full [Privacy Policy](docs/privacy.html).
+
+## Current limitations
+
+QRFerry is intentionally small and experimental. The current MVP has several known constraints:
+
+- 20 MB maximum source file
+- no RaptorQ or other forward-error-correction layer
+- no encryption or password protection
+- no sender/receiver authentication
+- no resumable persisted receive session
+- no background transfer mode
+- no transfer history
+- missed numbered chunks may require waiting for the next sender loop
+- PDF page rendering is not yet implemented
+- video/audio playback previews are not yet implemented
+- Android and iOS are the current application targets
 
 ## Development
 
@@ -375,7 +351,7 @@ Run tests:
 flutter test
 ```
 
-Build artifacts:
+Build:
 
 ```bash
 flutter build apk
@@ -384,87 +360,31 @@ flutter build ios
 ```
 
 > [!WARNING]
-> The Android release configuration in this MVP currently points at the debug signing configuration. Set up your own release keystore before publishing an APK/AAB.
+> Before publishing your own Android build, configure an appropriate release keystore and signing setup.
 
-## Privacy and security
+## Contributing
 
-QR Ferry has no file-upload transport. File content is read, encoded, decoded, reconstructed, previewed, and saved locally.
+Issues, bug reports, performance observations, protocol experiments, and focused pull requests are welcome.
 
-However, **offline does not mean secret**:
+When reporting transfer problems, useful details include:
 
-- The visible QR stream is currently unencrypted.
-- Someone able to record enough of the QR stream may be able to reconstruct the file.
-- CRC32 protects against accidental corruption, not malicious modification or forgery.
-- There is no sender identity verification or receiver authentication.
-- The receiver accepts the first valid transfer session and ignores another session until reset.
+- sender and receiver device models
+- OS versions
+- file type and size
+- selected FPS
+- lighting / viewing conditions
+- approximate progress when the failure occurred
+- whether lowering the FPS changed the result
 
-Do not use the current MVP to display sensitive information where untrusted observers can see or record the sender screen.
-
-## Current limitations
-
-- 20 MB maximum source file
-- No RaptorQ or other forward-error correction
-- No encryption or password protection
-- No sender/receiver authentication
-- No resumable persisted receive session
-- No transfer history
-- No background transfer mode
-- A missed numbered chunk may require waiting for the next full sender loop
-- Real PDF page rendering is not implemented yet
-- Video/audio playback previews are not implemented yet
-- Android and iOS runners only
-
-## Troubleshooting
-
-### Receiver does not detect the stream
-
-- Start with **5 FPS**.
-- Increase sender screen brightness.
-- Keep the complete QR and its white margin visible.
-- Move closer without cropping the code.
-- Keep both devices square to each other.
-- Clean the receiver camera lens.
-- Avoid reflections and direct glare.
-- Verify camera permission in system settings.
-
-### Progress gets stuck below 100%
-
-Keep the sender playing. The stream repeats continuously and missing frames can arrive on a later loop. If the unique count stops increasing for a long time, lower FPS or adjust distance/focus.
-
-### A new sender is ignored
-
-The receiver intentionally locks onto one session. Finish the current transfer or use **Scan another transfer** before receiving a different one.
-
-### iOS CocoaPods issues
-
-```bash
-flutter pub get
-cd ios
-pod install
-cd ..
-```
-
-When opening the iOS project manually, use `ios/Runner.xcworkspace` after pods have been installed.
-
-## Roadmap
-
-Possible next stages:
-
-- RaptorQ / fountain-code reception for loss tolerance
-- Rust codec through `dart:ffi`
-- Higher-density and higher-FPS QR profiles
-- Adaptive sender FPS based on receiver conditions
-- Full PDF page preview
-- Native video and audio preview
-- Authenticated encryption
-- Transfer pause/resume and persisted sessions
-- Optical-channel benchmarks across real devices
-- Expanded integration, fuzz, corrupted-frame, and camera tests
-
-## Inspiration
-
-QR Ferry is a Flutter exploration inspired by the optical file-transfer ideas in [deedy/qr-data-transfer](https://github.com/deedy/qr-data-transfer). This repository currently uses its own intentionally simpler numbered-chunk protocol rather than QRFerry's RaptorQ/WASM implementation.
+Open an issue: **https://github.com/itskdey/qr_ferry_flutter/issues**
 
 ## License
 
-Released under the [MIT License](LICENSE).
+QRFerry is released under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  <strong>QRFerry</strong><br />
+  Device-to-device optical file transfer, built with Flutter.
+</p>
