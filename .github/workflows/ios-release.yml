@@ -1,0 +1,84 @@
+name: iOS Release Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-ios:
+    name: Build iOS Release
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show toolchain versions
+        run: |
+          flutter --version
+          xcodebuild -version
+          pod --version
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Precache iOS artifacts
+        run: flutter precache --ios
+
+      - name: Build iOS release
+        run: flutter build ios --release --no-codesign
+
+      - name: Package release artifacts
+        run: |
+          set -euo pipefail
+
+          APP_PATH="build/ios/iphoneos/Runner.app"
+          OUTPUT_DIR="build/ios/release-artifacts"
+
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Expected app bundle not found at $APP_PATH"
+            exit 1
+          fi
+
+          mkdir -p "$OUTPUT_DIR/Payload"
+          cp -R "$APP_PATH" "$OUTPUT_DIR/Payload/Runner.app"
+
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$APP_PATH" \
+            "$OUTPUT_DIR/QRFerry-iOS-Release.app.zip"
+
+          (
+            cd "$OUTPUT_DIR"
+            zip -qry "QRFerry-iOS-Release-unsigned.ipa" Payload
+          )
+
+          rm -rf "$OUTPUT_DIR/Payload"
+
+          echo "Artifacts:"
+          ls -lh "$OUTPUT_DIR"
+
+      - name: Upload iOS release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: QRFerry-iOS-Release-${{ github.ref_name }}
+          path: |
+            build/ios/release-artifacts/QRFerry-iOS-Release.app.zip
+            build/ios/release-artifacts/QRFerry-iOS-Release-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
