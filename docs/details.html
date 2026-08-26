@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#F4F1EA" />
+  <meta name="description" content="Project details for QRFerry: developer, optical transfer pipeline, FQR1 protocol, privacy, limits, reporting, and source code." />
+  <title>QRFerry · Project Details</title>
+  <style>
+    :root{
+      --ink:#111820;
+      --paper:#F4F1EA;
+      --surface:#FCFBF8;
+      --white:#FFFFFF;
+      --muted:#667079;
+      --copy:#3B444C;
+      --line:#D5D2CA;
+      --signal:#E7FF54;
+      --blue:#2F6DFF;
+      --red:#E84C3D;
+      --dark:#0D1923;
+      --dark-inset:#18212A;
+      --dark-line:#394651;
+      --grid:rgba(17,24,32,.027);
+      --page:940px;
+      --header:54px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--paper)}
+    body{
+      margin:0;
+      color:var(--ink);
+      background-color:var(--paper);
+      background-image:
+        linear-gradient(to right,var(--grid) 1px,transparent 1px),
+        linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+      background-size:28px 28px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{color:inherit}
+    button{font:inherit}
+
+    .header{
+      position:fixed;
+      z-index:1000;
+      inset:0 0 auto 0;
+      height:var(--header);
+      background:rgba(244,241,234,.985);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+    .header-inner{
+      width:min(calc(100% - 32px),var(--page));
+      height:100%;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+    }
+    .back{
+      width:36px;
+      height:36px;
+      display:grid;
+      place-items:center;
+      border:0;
+      background:transparent;
+      color:var(--ink);
+      text-decoration:none;
+      transition:transform 160ms cubic-bezier(.16,1,.3,1),background 160ms ease;
+    }
+    .back:hover{background:rgba(17,24,32,.045)}
+    .back:active{transform:translateY(1px) scale(.96)}
+    .back svg{width:21px;height:21px}
+    .header-label{
+      margin-left:6px;
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.2px;
+    }
+    .brand{
+      margin-left:auto;
+      color:var(--ink);
+      font-size:17px;
+      font-weight:900;
+      letter-spacing:-.7px;
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(calc(100% - 40px),var(--page));
+      margin:0 auto;
+      padding:calc(var(--header) + 46px) 0 64px;
+    }
+    .mono{
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+    }
+
+    .hero{padding:0 0 54px}
+    .hero h1{
+      margin:14px 0 20px;
+      max-width:760px;
+      font-size:clamp(56px,9vw,94px);
+      line-height:.89;
+      font-weight:900;
+      letter-spacing:-.065em;
+    }
+    .hero p{
+      max-width:740px;
+      margin:0;
+      color:var(--copy);
+      font-size:16px;
+      line-height:1.62;
+    }
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+    .tag{
+      padding:7px 10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.55);
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    }
+
+    .section{margin-top:48px}
+    .section-head{
+      display:grid;
+      grid-template-columns:34px minmax(0,1fr);
+      gap:0;
+      margin-bottom:15px;
+      align-items:start;
+    }
+    .section-no{
+      padding-top:6px;
+      color:var(--muted);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:10px;
+      font-weight:800;
+    }
+    .section-head h2{
+      margin:0;
+      font-size:27px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-1px;
+    }
+    .section-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .hard-shell{
+      background:var(--ink);
+      padding:0 7px 7px 0;
+      border:1px solid var(--ink);
+    }
+    .hard-shell.muted-shadow{background:#44515C}
+    .hard-shell.signal-shadow{background:var(--signal)}
+    .hard-box{border:1px solid var(--ink);background:var(--surface)}
+
+    .developer{
+      padding:22px;
+      background:var(--ink);
+      color:white;
+    }
+    .developer-top{display:flex;align-items:center;gap:15px}
+    .dev-icon{
+      width:58px;
+      height:58px;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      background:var(--signal);
+      color:var(--ink);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+      font-size:17px;
+      font-weight:900;
+    }
+    .dev-name{font-size:22px;font-weight:900;letter-spacing:-.7px}
+    .dev-handle{margin-top:3px;color:#A7B0B8;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:9px;font-weight:700}
+    .developer hr{height:1px;border:0;background:#34414C;margin:19px 0 16px}
+    .developer p{margin:0;color:#C2C8CD;font-size:12px;line-height:1.6}
+    .dark-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+    .dark-tag{padding:6px 9px;border:1px solid var(--dark-line);background:var(--dark-inset);color:var(--signal);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:800;letter-spacing:.55px;text-transform:uppercase}
+
+    .pipeline{border:1px solid var(--ink);background:var(--surface)}
+    .pipeline-row{
+      display:grid;
+      grid-template-columns:26px 40px minmax(0,1fr);
+      gap:13px;
+      align-items:start;
+      padding:15px;
+      border-bottom:1px solid var(--line);
+    }
+    .pipeline-row:last-child{border-bottom:0}
+    .pipeline-no{padding-top:11px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:9px;font-weight:800}
+    .pipeline-icon{width:38px;height:38px;display:grid;place-items:center;background:var(--ink);color:white;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;font-weight:900}
+    .pipeline-row:nth-child(3) .pipeline-icon{background:var(--signal);color:var(--ink)}
+    .pipeline-title{margin:2px 0 3px;font-size:14px;font-weight:900}
+    .pipeline-copy{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+
+    .protocol-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .protocol{
+      min-height:94px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.66);
+    }
+    .protocol strong{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:16px;font-weight:900}
+    .protocol span{margin-top:7px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:700;letter-spacing:.45px;text-transform:uppercase}
+
+    .privacy{
+      padding:20px;
+      background:var(--ink);
+      color:white;
+    }
+    .fact{display:grid;grid-template-columns:20px minmax(0,1fr);gap:11px;padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid #34414C}
+    .fact:last-child{padding-bottom:0;margin-bottom:0;border-bottom:0}
+    .fact-mark{color:var(--signal);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:14px;font-weight:900}
+    .fact p{margin:0;color:#C2C8CD;font-size:11px;line-height:1.5}
+
+    .limits{padding:18px;border:1px solid var(--ink);background:var(--surface)}
+    .limit{display:grid;grid-template-columns:18px minmax(0,1fr);gap:11px;align-items:start;margin-bottom:13px}
+    .limit:last-child{margin-bottom:0}
+    .limit-no{width:18px;height:18px;display:grid;place-items:center;background:var(--ink);color:var(--signal);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:900}
+    .limit p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+
+    .report{padding:20px}
+    .badge{display:inline-block;padding:6px 9px;background:var(--red);color:white;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:900;letter-spacing:.7px}
+    .report h3{margin:16px 0 7px;font-size:21px;font-weight:900;letter-spacing:-.6px}
+    .report>p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+    .utilities{display:grid;gap:8px;margin-top:17px}
+    .utility{
+      width:100%;
+      min-height:46px;
+      padding:0 13px;
+      display:flex;
+      align-items:center;
+      gap:11px;
+      border:1px solid var(--ink);
+      background:white;
+      color:var(--ink);
+      text-decoration:none;
+      cursor:pointer;
+      font-size:11px;
+      font-weight:800;
+      transition:transform 150ms cubic-bezier(.16,1,.3,1),background 150ms ease;
+    }
+    .utility:hover{background:#F7F7F4;transform:translate(-1px,-1px)}
+    .utility:active{transform:translate(2px,2px)}
+    .utility-icon{width:20px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;font-weight:900}
+    .utility-arrow{margin-left:auto}
+
+    .open-source{padding:18px;border:1px solid var(--line);background:rgba(255,255,255,.62)}
+    .meta-row{display:grid;grid-template-columns:102px minmax(0,1fr);gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}
+    .meta-row:first-child{padding-top:0}
+    .meta-row:last-of-type{border-bottom:0}
+    .meta-label{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:800;letter-spacing:.45px;text-transform:uppercase}
+    .meta-value{overflow-wrap:anywhere;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:10px;font-weight:700}
+    .repo-link{margin-top:16px;min-height:45px;padding:0 13px;display:flex;align-items:center;gap:10px;background:var(--ink);color:white;text-decoration:none;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:9px;font-weight:900;letter-spacing:.65px}
+    .repo-link .code{color:var(--signal);font-size:14px}.repo-link .arrow{margin-left:auto}
+
+    .footer{margin-top:44px;padding-top:19px;border-top:1px solid var(--ink);text-align:center}
+    .footer-mono{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:8px;font-weight:800;letter-spacing:.7px}
+    .footer-copy{margin-top:8px;color:var(--muted);font-size:11px}
+
+    .toast{
+      position:fixed;
+      z-index:1200;
+      left:50%;
+      bottom:22px;
+      transform:translate(-50%,16px);
+      padding:11px 14px;
+      background:var(--ink);
+      color:white;
+      font-size:11px;
+      font-weight:800;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 180ms ease,transform 180ms cubic-bezier(.16,1,.3,1);
+      box-shadow:5px 5px 0 var(--signal);
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .toast b{color:var(--signal);margin-right:7px}
+
+    @media (max-width:620px){
+      .page{width:calc(100% - 28px);padding-top:calc(var(--header) + 34px)}
+      .hero h1{font-size:clamp(49px,15vw,70px)}
+      .section{margin-top:40px}
+      .protocol-grid{grid-template-columns:1fr 1fr}
+      .meta-row{grid-template-columns:84px minmax(0,1fr)}
+    }
+
+    @media (max-width:420px){
+      .protocol-grid{grid-template-columns:1fr}
+      .pipeline-row{grid-template-columns:22px 38px minmax(0,1fr);gap:10px;padding:13px}
+    }
+
+    @media (prefers-reduced-motion:no-preference){
+      .hero,.section{animation:reveal 460ms cubic-bezier(.16,1,.3,1) both}
+      .section:nth-of-type(2){animation-delay:40ms}
+      .section:nth-of-type(3){animation-delay:70ms}
+      .section:nth-of-type(4){animation-delay:100ms}
+      @keyframes reveal{from{opacity:0;transform:translateY(13px) scale(.994)}to{opacity:1;transform:none}}
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a class="back" href="index.html" aria-label="Back to QRFerry home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <span class="header-label">DETAILS</span>
+      <a class="brand" href="index.html">QRFerry</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="mono">Project details</div>
+      <h1>Built to move bytes<br>through light.</h1>
+      <p>QRFerry is an offline file-transfer experiment for Flutter. The sender turns a file into a repeating optical stream; the receiver rebuilds it from camera-decoded QR frames.</p>
+      <div class="tags" aria-label="Project tags">
+        <span class="tag">Flutter</span>
+        <span class="tag">Local only</span>
+        <span class="tag">FQR1</span>
+        <span class="tag">Open source</span>
+      </div>
+    </section>
+
+    <section class="section" id="developer">
+      <div class="section-head"><div class="section-no">01</div><div><h2>Developer</h2><p>The person building and maintaining QRFerry.</p></div></div>
+      <div class="hard-shell muted-shadow"><div class="hard-box developer">
+        <div class="developer-top">
+          <div class="dev-icon">&lt;/&gt;</div>
+          <div><div class="dev-name">Mean Pheakdey</div><div class="dev-handle">@itskdey · Developer</div></div>
+        </div>
+        <hr />
+        <p>QRFerry is built as a practical Flutter experiment around optical transport, local-first architecture, binary protocols, camera decoding, and interaction design.</p>
+        <div class="dark-tags"><span class="dark-tag">Flutter</span><span class="dark-tag">Dart</span><span class="dark-tag">GetX</span><span class="dark-tag">QR / Camera</span></div>
+      </div></div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="section-head"><div class="section-no">02</div><div><h2>How it works</h2><p>One file. Two devices. The camera is the link.</p></div></div>
+      <div class="pipeline">
+        <div class="pipeline-row"><div class="pipeline-no">01</div><div class="pipeline-icon">FILE</div><div><div class="pipeline-title">Select</div><p class="pipeline-copy">Pick a local file. Nothing is uploaded.</p></div></div>
+        <div class="pipeline-row"><div class="pipeline-no">02</div><div class="pipeline-icon">CRC</div><div><div class="pipeline-title">Prepare</div><p class="pipeline-copy">CRC32, optional gzip, metadata, then numbered chunks.</p></div></div>
+        <div class="pipeline-row"><div class="pipeline-no">03</div><div class="pipeline-icon">QR</div><div><div class="pipeline-title">Broadcast</div><p class="pipeline-copy">Each chunk becomes a raw binary QR frame and loops on screen.</p></div></div>
+        <div class="pipeline-row"><div class="pipeline-no">04</div><div class="pipeline-icon">CAM</div><div><div class="pipeline-title">Scan</div><p class="pipeline-copy">The other device collects unique frames in any order.</p></div></div>
+        <div class="pipeline-row"><div class="pipeline-no">05</div><div class="pipeline-icon">OK</div><div><div class="pipeline-title">Verify</div><p class="pipeline-copy">Reassemble, validate CRC/size, decompress, preview, save.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="protocol">
+      <div class="section-head"><div class="section-no">03</div><div><h2>Under the hood</h2><p>The current MVP keeps the protocol intentionally small.</p></div></div>
+      <div class="protocol-grid">
+        <div class="protocol"><strong>FQR1</strong><span>Protocol magic</span></div>
+        <div class="protocol"><strong>512 B</strong><span>Default payload</span></div>
+        <div class="protocol"><strong>CRC32 ×3</strong><span>Integrity stages</span></div>
+        <div class="protocol"><strong>5 / 8 / 12</strong><span>Sender FPS</span></div>
+        <div class="protocol"><strong>20 MB</strong><span>Current file cap</span></div>
+        <div class="protocol"><strong>GZIP</strong><span>Optional compression</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="privacy">
+      <div class="section-head"><div class="section-no">04</div><div><h2>Privacy &amp; security</h2><p>What QRFerry does—and what it deliberately does not claim.</p></div></div>
+      <div class="hard-shell muted-shadow"><div class="hard-box privacy">
+        <div class="fact"><div class="fact-mark">×</div><p>No backend, account, upload path, Wi-Fi, or Bluetooth is required.</p></div>
+        <div class="fact"><div class="fact-mark">◎</div><p>The QR stream is visible and is not encrypted in the current MVP.</p></div>
+        <div class="fact"><div class="fact-mark">✓</div><p>CRC32 detects accidental corruption; it is not authentication.</p></div>
+        <div class="fact"><div class="fact-mark">◉</div><p>Someone who records the complete optical stream may reconstruct the file.</p></div>
+      </div></div>
+    </section>
+
+    <section class="section" id="limits">
+      <div class="section-head"><div class="section-no">05</div><div><h2>Current limits</h2><p>Important constraints of the present protocol.</p></div></div>
+      <div class="limits">
+        <div class="limit"><div class="limit-no">1</div><p>Maximum input size is currently 20 MB.</p></div>
+        <div class="limit"><div class="limit-no">2</div><p>No encryption, password protection, or sender authentication yet.</p></div>
+        <div class="limit"><div class="limit-no">3</div><p>No fountain / RaptorQ forward-error correction in the current protocol.</p></div>
+        <div class="limit"><div class="limit-no">4</div><p>Missed chunks are recovered when the sender loops back to them.</p></div>
+        <div class="limit"><div class="limit-no">5</div><p>Receive sessions are not resumable after the app or screen is closed.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="report">
+      <div class="section-head"><div class="section-no">06</div><div><h2>Report a problem</h2><p>Good bug reports make the optical link better.</p></div></div>
+      <div class="hard-shell"><div class="hard-box report">
+        <span class="badge">BUG / FEEDBACK</span>
+        <h3>Found something weird?</h3>
+        <p>Include the device, OS, file type and size, sender FPS, session ID, receiver progress, and rejected-frame count when possible.</p>
+        <div class="utilities">
+          <a class="utility" href="https://github.com/itskdey/qr_ferry_flutter/issues/new" target="_blank" rel="noreferrer noopener"><span class="utility-icon">BUG</span><span>Open GitHub issue</span><span class="utility-arrow">→</span></a>
+          <button class="utility" type="button" id="copy-report"><span class="utility-icon">CPY</span><span>Copy report template</span><span class="utility-arrow">→</span></button>
+        </div>
+      </div></div>
+    </section>
+
+    <section class="section" id="source">
+      <div class="section-head"><div class="section-no">07</div><div><h2>Open source</h2><p>Explore the implementation, protocol, and history.</p></div></div>
+      <div class="open-source">
+        <div class="meta-row"><div class="meta-label">Repository</div><div class="meta-value">github.com/itskdey/qr_ferry_flutter</div></div>
+        <div class="meta-row"><div class="meta-label">License</div><div class="meta-value">MIT</div></div>
+        <div class="meta-row"><div class="meta-label">Protocol</div><div class="meta-value">FQR1 / v1</div></div>
+        <div class="meta-row"><div class="meta-label">Inspired by</div><div class="meta-value">deedy/qr-data-transfer</div></div>
+        <a class="repo-link" href="https://github.com/itskdey/qr_ferry_flutter" target="_blank" rel="noreferrer noopener"><span class="code">&lt;/&gt;</span><span>OPEN REPOSITORY</span><span class="arrow">↗</span></a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-mono">QRFERRY · FLUTTER · FQR1 · LOCAL ONLY</div>
+      <div class="footer-copy">Developed by Mean Pheakdey · @itskdey</div>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><b>✓</b><span>Report template copied</span></div>
+
+  <script>
+    const reportTemplate = `QRFerry bug report
+
+Device:
+OS version:
+File type:
+File size:
+Sender FPS: 5 / 8 / 12
+Session ID:
+Receiver progress when it failed:
+Rejected frames:
+
+What happened:
+
+What I expected:
+
+Steps to reproduce:
+1.
+2.
+3.
+`;
+
+    const copyButton = document.getElementById('copy-report');
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    copyButton?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(reportTemplate);
+        toast.querySelector('span').textContent = 'Report template copied';
+      } catch (_) {
+        const area = document.createElement('textarea');
+        area.value = reportTemplate;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+        toast.querySelector('span').textContent = 'Report template copied';
+      }
+      clearTimeout(toastTimer);
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    });
+  </script>
+</body>
+</html>
